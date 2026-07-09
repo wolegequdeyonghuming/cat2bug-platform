@@ -172,6 +172,8 @@ export default {
       if (shell) observeUploadFocusTarget(shell)
       this.patchUploadTabStop()
     })
+    // 在组件挂载后绑定粘贴监听
+    document.addEventListener('paste', this.handlePaste);
   },
   updated() {
     this.$nextTick(() => {
@@ -184,6 +186,7 @@ export default {
   },
   beforeDestroy() {
     this.closeNativeFilePickerSession();
+    document.removeEventListener('paste', this.handlePaste);
   },
   methods: {
     patchUploadTabStop() {
@@ -368,23 +371,50 @@ export default {
         this.$message.warning(this.$i18n.t('upload.clipboard-not-img').toString());
       }
     },
+    // 粘贴事件处理函数
+    async handlePaste(event) {
+      const clipboardItems = event.clipboardData?.items;
+      if (!clipboardItems) return;
+
+      const files = [];
+      for (const item of clipboardItems) {
+        // 只处理图片类型
+        if (!item.type.startsWith('image/')) continue;
+        const blob = item.getAsFile();
+        if (blob) {
+          const ext = (item.type.split('/')[1] || 'png').replace('jpeg', 'jpg');
+          files.push(new File([blob], `clipboard.${ext}`, { type: item.type }));
+        }
+      }
+
+      if (files.length === 0) {
+        this.$message.warning(this.$i18n.t('upload.clipboard-not-img').toString());
+        return;
+      }
+      await this.uploadClipboardFiles(files);
+    },
+
     async pasteFromClipboardApi() {
       try {
-        const clipboardItems = await navigator.clipboard.read();
-        const files = [];
-        for (const clipboardItem of clipboardItems) {
-          for (const type of clipboardItem.types) {
-            if (!type.startsWith('image/')) continue;
-            const blob = await clipboardItem.getType(type);
-            const ext = (type.split('/')[1] || 'png').replace('jpeg', 'jpg');
-            files.push(new File([blob], `clipboard.${ext}`, { type: blob.type || type }));
+        if (navigator.clipboard && window.isSecureContext) {
+          const clipboardItems = await navigator.clipboard.read();
+          const files = [];
+          for (const clipboardItem of clipboardItems) {
+            for (const type of clipboardItem.types) {
+              if (!type.startsWith('image/')) continue;
+              const blob = await clipboardItem.getType(type);
+              const ext = (type.split('/')[1] || 'png').replace('jpeg', 'jpg');
+              files.push(new File([blob], `clipboard.${ext}`, {type: blob.type || type}));
+            }
           }
+          if (!files.length) {
+            this.$message.warning(this.$i18n.t('upload.clipboard-not-img').toString());
+            return;
+          }
+          await this.uploadClipboardFiles(files);
+        } else {
+          this.$message.info(this.$i18n.t('upload.paste-hint').toString());
         }
-        if (!files.length) {
-          this.$message.warning(this.$i18n.t('upload.clipboard-not-img').toString());
-          return;
-        }
-        await this.uploadClipboardFiles(files);
       } catch (err) {
         console.error(err.name, err.message);
       }

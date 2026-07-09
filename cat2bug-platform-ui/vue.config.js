@@ -63,7 +63,6 @@ const docsStaticDir = path.resolve(__dirname, '../readme/production')
 // vue.config.js 配置说明
 //官方vue.config.js 参考文档 https://cli.vuejs.org/zh/config/#css-loaderoptions
 // 这里只列一部分，具体配置参考文档
-const webpack = require('webpack')
 const isDev = process.env.NODE_ENV === 'development'
 const isEmbedded = process.env.NODE_ENV === 'embedded'
 const isAnalyze = process.env.ANALYZE === 'true'
@@ -185,18 +184,15 @@ module.exports = {
             statsOptions: { source: false }
           })
         ] : []),
-        ...(!devToolsEnabled ? [
-          new webpack.IgnorePlugin({
-            resourceRegExp: /[\\/]views[\\/]tool[\\/]/
-          })
-        ] : []),
-        new CopyWebpackPlugin([
-          {
-            from: docsStaticDir,
-            to: path.resolve(__dirname, isEmbedded ? '../cat2bug-platform-admin/src/main/resources/static/docs' : 'dist/docs'),
-            toType: 'dir'
-          }
-        ])
+        new CopyWebpackPlugin({
+          patterns: [
+            {
+              from: docsStaticDir,
+              to: path.resolve(__dirname, isEmbedded ? '../cat2bug-platform-admin/src/main/resources/static/docs' : 'dist/docs'),
+              toType: 'dir'
+            }
+          ]
+        })
       ])
     ],
     module: {
@@ -248,7 +244,23 @@ module.exports = {
       })
       .end()
 
-    config.when(process.env.NODE_ENV !== 'development', config => {
+      if (!devToolsEnabled) {
+        config.plugin('ignore-tool-views').use({
+          apply(compiler) {
+            compiler.hooks.normalModuleFactory.tap('IgnoreToolViews', nmf => {
+              nmf.hooks.beforeResolve.tapAsync('IgnoreToolViews', (result, callback) => {
+                if (!result) return callback()
+                if (/[\\/]views[\\/]tool[\\/]/.test(result.request)) {
+                  return callback(null, false)
+                }
+                callback(null, result)
+              })
+            })
+          }
+        })
+      }
+
+      config.when(process.env.NODE_ENV !== 'development', config => {
           config
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
