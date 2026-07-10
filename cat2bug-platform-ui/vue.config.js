@@ -112,7 +112,7 @@ module.exports = {
     proxy: {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://localhost:2020`,
+        target: `http://localhost:8000`,
         changeOrigin: true,
         onError: proxyOnError,
         onProxyReqWs: proxyOnProxyReqWs,
