@@ -32,7 +32,7 @@
         <h1 style="font-size: 2rem;">企业微信配置说明</h1>
         <h2>企业微信平台配置</h2>
         <p>当前配置目的是发送个人通知到企业微信平台，此功能是通过微信【企业内部开发】->【服务器API】->【消息推送】实现的；调用此接口需要先在企业微信平台创建应用，并将配置完成的账号ID配置到Cat2Bug-Platform平台，步骤如下。</p>
-        <p>1. 用企业管理员的账号登陆企业微信平台 <a href="https://work.weixin.qq.com">https://work.weixin.qq.com</a></p>
+        <p>1. 用企业管理员的账号登录企业微信平台 <a href="https://work.weixin.qq.com">https://work.weixin.qq.com</a></p>
         <p>2. 选择【应用管理】菜单，点击【创建应用】功能创建发送消息的应用。</p>
         <el-image :src="require('@/assets/images/help/wechat/wechat-create-app.png')" />
         <p>3. 上传图标，填写应用名称，可见范围选择您想发送消息的部门，之后点击【创建应用】按钮。</p>
@@ -46,7 +46,7 @@
         <el-image :src="require('@/assets/images/help/wechat/wechat-enterprise-id.png')" />
         <h2>配置用户信息</h2>
         <p>如果需要将通知信息单独发送给指定成员，需要获取成员在企业微信中的账号，并配置到Cat2Bug-Platform个人通知配置中，操作步骤如下。</p>
-        <p>1. 用企业管理员的账号登陆企业微信平台 <a href="https://work.weixin.qq.com">https://work.weixin.qq.com</a></p>
+        <p>1. 用企业管理员的账号登录企业微信平台 <a href="https://work.weixin.qq.com">https://work.weixin.qq.com</a></p>
         <p>2. 在导航菜单中选择【通讯录】，在右侧成员列表中点击需要查看的成员信息，查看并复制成员账号。</p>
         <el-image :src="require('@/assets/images/help/wechat/wechat-user-id.png')" />
         <p>3. 进入Cat2Bug-Platform系统，点击右上角的通知图标，进入后选择右侧配置按钮，将复制的账号粘贴在【接收平台】->【企业微信】->【成员账号】中。</p>
