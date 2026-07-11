@@ -1,7 +1,7 @@
 <template>
     <div :class="{'has-logo':showLogo}" :style="{ backgroundColor: sidebarShellBackground }">
         <team-select v-if="showLogo" :collapse="isCollapse" v-model="teamId"></team-select>
-        <el-scrollbar :class="scrollbarThemeClass" wrap-class="scrollbar-wrapper">
+        <el-scrollbar :class="scrollbarThemeClass" wrap-class="scrollbar-wrapper" class="sidebar-scroller">
           <el-menu
             v-show="!teamLock && teamId"
             :default-active="activeMenu"
@@ -65,46 +65,49 @@
           <div v-show="teamId && teamOptionRouters" class="sidebar-divider">
             <el-divider></el-divider>
           </div>
-<!--          <el-menu-->
-<!--            :default-active="activeMenu"-->
-<!--            :collapse="isCollapse"-->
-<!--            :background-color="settings.sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground"-->
-<!--            :text-color="settings.sideTheme === 'theme-dark' ? variables.menuColor : variables.menuLightColor"-->
-<!--            :unique-opened="true"-->
-<!--            :active-text-color="settings.theme"-->
-<!--            :collapse-transition="false"-->
-<!--            mode="vertical"-->
-<!--          >-->
-<!--            <sidebar-item-->
-<!--              v-for="(route, index) in filterSidebarRouters('system')"-->
-<!--              :key="route.path  + index"-->
-<!--              :item="route"-->
-<!--              :base-path="'system/'+route.path"-->
-<!--            />-->
-<!--          </el-menu>-->
+
+          <div v-show="adminOptionRouters.length>0">
+            <el-divider>Admin</el-divider>
+            <el-menu
+              :default-active="activeMenu"
+              :collapse="isCollapse"
+              :background-color="menuBackgroundColor"
+              :text-color="menuTextColor"
+              :unique-opened="true"
+              :active-text-color="settings.theme"
+              :collapse-transition="false"
+              mode="vertical"
+            >
+              <sidebar-item
+                v-for="(route, index) in adminOptionRouters"
+                :key="route.path  + index"
+                :item="route"
+                :base-path="'admin/'+route.path"
+              />
+            </el-menu>
+            <div class="sidebar-divider">
+              <el-divider>若依</el-divider>
+            </div>
+            <el-menu
+              :default-active="activeMenu"
+              :collapse="isCollapse"
+              :background-color="settings.sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground"
+              :text-color="settings.sideTheme === 'theme-dark' ? variables.menuColor : variables.menuLightColor"
+              :unique-opened="true"
+              :active-text-color="settings.theme"
+              :collapse-transition="false"
+              mode="vertical"
+            >
+              <sidebar-item
+                v-for="(route, index) in filterSidebarRouters('system')"
+                :key="route.path  + index"
+                :item="route"
+                :base-path="'system/'+route.path"
+              />
+            </el-menu>
+          </div>
+
         </el-scrollbar>
-      <div style="bottom: 10px;position: absolute;height: auto;width: 100%;" v-show="adminOptionRouters.length>0" >
-        <div class="sidebar-divider">
-          <el-divider></el-divider>
-        </div>
-        <el-menu
-          :default-active="activeMenu"
-          :collapse="isCollapse"
-          :background-color="menuBackgroundColor"
-          :text-color="menuTextColor"
-          :unique-opened="true"
-          :active-text-color="settings.theme"
-          :collapse-transition="false"
-          mode="vertical"
-        >
-          <sidebar-item
-            v-for="(route, index) in adminOptionRouters"
-            :key="route.path  + index"
-            :item="route"
-            :base-path="'admin/'+route.path"
-          />
-        </el-menu>
-      </div>
     </div>
 </template>
 
@@ -182,6 +185,7 @@ export default {
       },
       filterSidebarRouters() {
         return function (name){
+          console.log(name)
           for(let i in this.sidebarRouters) {
             if(this.sidebarRouters[i].name && this.sidebarRouters[i].name.toLowerCase()==name.toLowerCase()){
               return this.sidebarRouters[i].children;
@@ -217,6 +221,11 @@ export default {
     .el-divider {
       margin: 7px 0px;
       background-color: #EBEEF5;
+    }
+  }
+  .sidebar-scroller {
+    :deep(.scrollbar-wrapper) {
+      height: calc(100vh - 100px);
     }
   }
 </style>
