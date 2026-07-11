@@ -121,7 +121,7 @@ module.exports = {
         }
       },
       [process.env.VUE_APP_BASE_WEBSOCKET]: {
-        target: `ws://localhost:2020`,
+        target: `ws://localhost:8000`,
         changeOrigin: true,
         ws: true,
         onError: proxyOnError,
