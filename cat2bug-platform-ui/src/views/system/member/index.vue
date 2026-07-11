@@ -75,6 +75,7 @@
               icon="el-icon-edit"
               @click="handleUpdate(scope.row)"
               v-hasPermi="['system:member:edit']"
+              width="100px"
             >{{ $t('modify') }}</el-button>
             <el-button
               size="mini"
@@ -82,6 +83,7 @@
               icon="el-icon-delete"
               @click="handleResetPwd(scope.row)"
               v-hasPermi="['system:member:resetPwd']"
+              width="100px"
             >{{ $t('reset-password') }}</el-button>
           </template>
         </el-table-column>

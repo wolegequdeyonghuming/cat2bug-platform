@@ -190,7 +190,8 @@
 .el-table .fixed-width .el-button--mini {
 	padding-left: 0;
 	padding-right: 0;
-	width: inherit;
+	//width: inherit;
+  flex: 1;
 }
 
 /** 表格更多操作下拉样式 */

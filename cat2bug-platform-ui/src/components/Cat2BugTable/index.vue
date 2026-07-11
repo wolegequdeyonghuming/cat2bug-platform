@@ -222,7 +222,7 @@ export default {
     },
     columnWidth: function () {
       return function (column) {
-        return column['width_' + this.$i18n.locale] || column.width || DEFAULT_COLUMN_WIDTH;
+        return column['width_' + this.$i18n.locale] || column.width || '';
       }
     },
     columnMinWidthPx() {
@@ -315,7 +315,7 @@ export default {
     },
     columnTableWidth(col) {
       const w = this.sanitizeColumnWidthPx(this.columnWidth(col));
-      return w !== undefined ? w : DEFAULT_COLUMN_WIDTH;
+      return w !== undefined ? w : '';
     },
     /**
      * 固定列区域是独立 table，主表体与固定列行高依赖同一套列宽与 scrollY gutter。
