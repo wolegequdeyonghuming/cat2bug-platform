@@ -106,6 +106,7 @@ public class SecurityConfig {
                             ant(HttpMethod.GET, "/**/*.html"),
                             ant(HttpMethod.GET, "/**/*.css"),
                             ant(HttpMethod.GET, "/**/*.js"),
+                            ant(HttpMethod.GET, "/favicon.ico"),
                             ant(HttpMethod.GET, "/profile/**"),
                             ant(HttpMethod.GET, "/docs/images/**")
                     ).permitAll();

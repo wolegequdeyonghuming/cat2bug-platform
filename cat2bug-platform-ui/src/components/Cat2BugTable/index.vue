@@ -20,7 +20,7 @@
                        :label="columnHeaderLabel(col)"
                        :key="columnRowKey(col, colIndex)"
                        :width="columnTableWidth(col)"
-                       :min-width="columnMinWidthPx"
+                       :min-width="columnMinWidthPx || '120px'"
                        :prop="col.prop"
                        :class-name="columnClassName(col)"
                        :label-class-name="columnHeaderLabelClassName(col)"
