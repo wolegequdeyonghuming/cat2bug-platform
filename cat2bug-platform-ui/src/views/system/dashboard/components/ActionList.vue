@@ -1,6 +1,6 @@
 <template>
   <div class="defect-state-chart" :style="{width:width}">
-    <h1>{{ $t('dashboard.action.title') }}</h1>
+    <h1 style="font-size: 24px">{{ $t('dashboard.action.title') }}</h1>
     <div v-for="actionTime in sortActionTimes">
       <h4>{{formatDate(actionTime)}}</h4>
       <div v-for="action in  actionList[actionTime]" class="action-row">

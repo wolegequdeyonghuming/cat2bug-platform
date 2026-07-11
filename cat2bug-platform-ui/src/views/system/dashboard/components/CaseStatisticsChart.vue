@@ -72,10 +72,11 @@ export default {
     margin-top: -15px;
     > h1 {
       flex-shrink: 0;
+      font-size: 24px;
     }
     > span {
       flex: 1;
-      font-size: 3rem;
+      font-size: 2rem;
       text-align: center;
     }
   }

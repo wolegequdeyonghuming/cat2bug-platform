@@ -1,6 +1,6 @@
 <template>
   <div :style="{width:width}">
-    <h1>{{ $t('dashboard.member-Defect-rank.title') }}</h1>
+    <h1 style="font-size: 24px">{{ $t('dashboard.member-Defect-rank.title') }}</h1>
     <div v-for="(m,index) in memberList" :key="index" class="member-row" @click="handleClick(m)">
       <cat2-bug-avatar :member="m" />
       <div class="line">

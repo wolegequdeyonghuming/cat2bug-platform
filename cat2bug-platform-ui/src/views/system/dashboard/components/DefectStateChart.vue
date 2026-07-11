@@ -170,6 +170,7 @@ export default {
     position: absolute;
     top: 7px;
     margin-top: 0px;
+    font-size: 24px;
   }
 }
 .chart-tools {
