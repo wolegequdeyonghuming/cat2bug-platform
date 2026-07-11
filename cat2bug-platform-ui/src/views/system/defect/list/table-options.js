@@ -14,7 +14,7 @@ export const TableOptions=[{
   fixed: false,
   visible: true,
   align: 'center',
-  width: 100,
+  width: 120,
   width_ja_JP: 120,
   width_ar: 120
 },{
