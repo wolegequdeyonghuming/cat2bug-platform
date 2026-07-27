@@ -959,11 +959,12 @@ export default {
       if (key === 'defectState') {
         const select = this.$refs.defectQueryStateSelect
         if (select && typeof select.blur === 'function') {
-          select.blur()
+          // select.blur()
         } else {
           const el = this.getDefectQueryNavFocusEl('defectState')
           if (el && typeof el.blur === 'function') {
-            el.blur()
+            // 这里会造成无法选择
+            // el.blur()
           }
         }
         return
@@ -2457,6 +2458,7 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
+      console.log('handle query')
       this.queryParams.pageNum = 1
       this.queryParams.pageSize = 10
       this.handleRefreshQuery()
