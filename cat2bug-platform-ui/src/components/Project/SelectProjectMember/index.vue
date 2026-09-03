@@ -43,7 +43,7 @@
         <el-input ref="selectProjectMemberInput" class="select-project-member-search-input" :size="size" :placeholder="selectMembers.size>0?'':$t(placeholder)" v-model="queryMember.params.search" @input="searchChangeHandle" @focus.native="onSearchInputFocus" @blur.native="onSearchInputBlur" @keydown.native.stop="searchKeyDownHandle"></el-input>
       </div>
       <i class="select-project-member-input__icon el-icon-arrow-up" :class="{'is-open': popoverVisible}" v-show="isClearButtonVisible==false" @mouseenter="showClearButtonHandle(true)"></i>
-      <i class="select-project-member-input__icon el-icon-circle-close" v-show="isClearButtonVisible==true" @mouseleave="showClearButtonHandle(false)" @click="clearSelectMembersHandle"></i>
+      <i class="select-project-member-input__icon el-icon-circle-close" v-show="isClearButtonVisible==true" @mouseleave="showClearButtonHandle(false)" @click="clearSelectMembersHandle($event)"></i>
     </div>
     </template>
     <el-tabs v-if="roleGroup" ref="tabs" class="select-project-member-tabs" v-model="queryMember.roleId" @tab-click="getMemberList">

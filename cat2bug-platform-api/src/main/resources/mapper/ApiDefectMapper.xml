@@ -105,20 +105,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 SELECT
                     d1.defect_id,
                     GROUP_CONCAT(u.user_name) AS user_names,
-                    CONCAT('[', GROUP_CONCAT( CONCAT('{"memberId":',
-                         CASE WHEN u.user_id IS NOT NULL THEN user_id ELSE 0 END,
-                         ',"memberAccount":',
-                         CASE WHEN u.user_name IS NOT NULL THEN CONCAT('"',u.user_name,'"') ELSE 'null' END,
-                         ',"memberName":',
-                         CASE WHEN u.nick_name IS NOT NULL THEN CONCAT('"',u.nick_name,'"') ELSE 'null' END,
-                         ',"phoneNumber":',
-                         CASE WHEN u.phonenumber IS NOT NULL THEN CONCAT('"',u.phonenumber,'"') ELSE 'null' END,
-                         ',"email":',
-                         CASE WHEN u.email IS NOT NULL THEN CONCAT('"',u.email,'"') ELSE 'null' END,
-                         ',"avatar":',
-                         CASE WHEN u.avatar IS NOT NULL THEN CONCAT('"',u.avatar,'"') ELSE 'null' END,
-
-                         '}')), ']') AS user_infos
+                    JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'memberId', IFNULL(u.user_id, 0),
+                            'memberAccount', u.user_name,
+                            'memberName', u.nick_name,
+                            'phoneNumber', u.phonenumber,
+                            'email', u.email,
+                            'avatar', u.avatar
+                        )
+                    ) AS user_infos
                 FROM
                     sys_defect d1
                         LEFT JOIN sys_user u ON d1.handle_by REGEXP CONCAT('\b',u.user_id,'\b') OR d1.handle_by REGEXP CONCAT('\\b',u.user_id,'\\b')

@@ -284,7 +284,8 @@ export function onDropdownBlurPointerDown(e) {
   if (target.closest('.el-select-dropdown') ||
     target.closest('.select-module-add') ||
     target.closest('.select-module-add-button') ||
-    target.closest('.select-module-popover')) {
+    target.closest('.select-module-popover') ||
+    target.closest('.select-project-member-popover')) {
     suppressDropdownBlurClose(350)
   }
 }

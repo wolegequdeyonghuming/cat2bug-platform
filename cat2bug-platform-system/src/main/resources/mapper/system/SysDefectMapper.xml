@@ -348,15 +348,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LEFT JOIN (
             SELECT
                 d1.defect_id,
-                CONCAT('[', GROUP_CONCAT(
-                    CONCAT(
-                        '{"userId":', IFNULL(u.user_id, 0),
-                        ',"nickName":"', IFNULL(u.nick_name, ''), '"',
-                        ',"userName":"', IFNULL(u.user_name, ''), '"',
-                        ',"avatar":"', IFNULL(u.avatar, ''), '"',
-                        '}'
+                JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'userId', IFNULL(u.user_id, 0),
+                        'nickName', IFNULL(u.nick_name, ''),
+                        'userName', IFNULL(u.user_name, ''),
+                        'avatar', IFNULL(u.avatar, '')
                     )
-                ), ']') AS user_infos
+                ) AS user_infos
             FROM sys_defect d1
             LEFT JOIN sys_user u ON JSON_CONTAINS(d1.handle_by, CAST(u.user_id AS JSON))
             GROUP BY d1.defect_id
@@ -454,15 +453,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LEFT JOIN (
             SELECT
                 d1.defect_id,
-                CONCAT('[', GROUP_CONCAT(
-                    CONCAT(
-                        '{"userId":', IFNULL(u.user_id, 0),
-                        ',"nickName":"', IFNULL(u.nick_name, ''), '"',
-                        ',"userName":"', IFNULL(u.user_name, ''), '"',
-                        ',"avatar":"', IFNULL(u.avatar, ''), '"',
-                        '}'
+                JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'userId', IFNULL(u.user_id, 0),
+                        'nickName', IFNULL(u.nick_name, ''),
+                        'userName', IFNULL(u.user_name, ''),
+                        'avatar', IFNULL(u.avatar, '')
                     )
-                ), ']') AS user_infos
+                ) AS user_infos
             FROM sys_defect d1
             LEFT JOIN sys_user u ON JSON_CONTAINS(d1.handle_by, CAST(u.user_id AS JSON))
             GROUP BY d1.defect_id

@@ -1,5 +1,8 @@
 <template>
-  <row-list-member :tooltip="tooltip" v-show="memberList && memberList.length>0" v-model="memberList" />
+  <div>
+    <span style="font-size: 10px; color: #888">正在关注：</span>
+    <row-list-member :tooltip="tooltip" v-show="memberList && memberList.length>0" v-model="memberList" />
+  </div>
 </template>
 
 <script>

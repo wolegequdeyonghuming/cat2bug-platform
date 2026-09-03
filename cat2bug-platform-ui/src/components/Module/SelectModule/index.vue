@@ -217,6 +217,11 @@ export default {
     moduleId(newVal, oldVal) {
       if (newVal === oldVal) return
       if (newVal) {
+        const id = Number(newVal)
+        if (id && this.modulePathById[id]) {
+          this.selectModule = { moduleId: id, moduleName: this.modulePathById[id] }
+          this.syncModuleDisplay(this.selectModule)
+        }
         this.loadModuleForProp(newVal)
       } else {
         this.clearSelectModuleState(false)
@@ -1189,15 +1194,22 @@ export default {
       })
     },
     /** 表单打开/重置时与 v-model 强制对齐（含 moduleId 未变化的情况） */
-    resetFromForm(moduleId) {
+    resetFromForm(moduleId, moduleName) {
       ++this._moduleLoadSeq
       this.resetMenu()
       this.refreshRootMenu()
-      if (moduleId) {
-        this.loadModuleForProp(moduleId)
-      } else {
+      const id = Number(moduleId)
+      if (!id) {
         this.clearSelectModuleState(false)
+        return
       }
+      const knownPath = this.modulePathById[id]
+      const label = knownPath || (moduleName != null ? String(moduleName).trim() : '')
+      if (label) {
+        this.selectModule = { moduleId: id, moduleName: label }
+        this.syncModuleDisplay(this.selectModule)
+      }
+      this.loadModuleForProp(id)
     },
     clearSelectModuleState(emitInput) {
       ++this._moduleLoadSeq

@@ -169,7 +169,7 @@ export default {
             orderedFields.refreshCustomFieldDefaults()
             const selectModule = orderedFields.getSelectModuleRef && orderedFields.getSelectModuleRef()
             if (selectModule && typeof selectModule.resetFromForm === 'function') {
-              selectModule.resetFromForm(this.form.moduleId)
+              selectModule.resetFromForm(this.form.moduleId, this.form.moduleName)
             }
             const selectCase = orderedFields.getSelectCaseRef && orderedFields.getSelectCaseRef()
             if (this.form.moduleId && selectCase) {

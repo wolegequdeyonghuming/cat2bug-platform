@@ -970,19 +970,19 @@ export default {
         return
       }
       if (key === 'handleBy') {
-        const comp = this.$refs.defectQueryHandleBy
-        if (comp) {
-          comp.searchInputActive = false
-          const inputComp = comp.$refs && comp.$refs.selectProjectMemberInput
-          const inner = inputComp && inputComp.$el && inputComp.$el.querySelector('input')
-          if (inner && typeof inner.blur === 'function') {
-            inner.blur()
-          }
-        }
-        const shell = this.getDefectQueryNavFocusEl('handleBy')
-        if (shell && typeof shell.blur === 'function') {
-          shell.blur()
-        }
+        // const comp = this.$refs.defectQueryHandleBy
+        // if (comp) {
+        //   comp.searchInputActive = false
+        //   const inputComp = comp.$refs && comp.$refs.selectProjectMemberInput
+        //   const inner = inputComp && inputComp.$el && inputComp.$el.querySelector('input')
+        //   if (inner && typeof inner.blur === 'function') {
+        //     inner.blur()
+        //   }
+        // }
+        // const shell = this.getDefectQueryNavFocusEl('handleBy')
+        // if (shell && typeof shell.blur === 'function') {
+        //   shell.blur()
+        // }
         return
       }
       if (key === 'nameVersionKeyword') {
