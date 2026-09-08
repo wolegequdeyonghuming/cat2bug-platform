@@ -61,7 +61,7 @@ export const TableOptions=[{
   className: 'defect-state-col',
 },{
   key: 'module',
-  prop: 'modulePath',
+  prop: 'moduleName',
   fixed: false,
   visible: true,
   width: 200,

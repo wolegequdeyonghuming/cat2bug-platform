@@ -22,6 +22,9 @@ export function resolveDefectTableOrderByColumn(prop) {
       return 'defectState'
     case 'defectTypeName':
       return 'defectType'
+    case 'moduleName':
+    case 'modulePath':
+      return null
     default:
       return prop
   }

@@ -31,11 +31,7 @@
           </template>
         </el-table-column>
         <el-table-column :label="$t('state')" align="left" prop="defectStateName" width="120" sortable />
-        <el-table-column :label="$t('module')" align="left" prop="modulePath" width="150" sortable >
-          <template #default="{row}">
-            {{ getModulePath(row.modulePath) }}
-          </template>
-        </el-table-column>
+        <el-table-column :label="$t('module')" align="left" prop="moduleName" width="150" sortable />
         <el-table-column :label="$t('image')" align="left" prop="imgUrls">
           <template slot-scope="scope">
             <cat2-bug-image
@@ -132,15 +128,6 @@ export default {
     },
   },
   methods: {
-    getModulePath(modulePath) {
-      if (!modulePath)
-        return ''
-      const arr = modulePath.split('/')
-      if (arr.length >= 2) {
-        return [arr[0], arr[arr.length - 1]].join('/')
-      }
-      return modulePath
-    },
     open() {
       this.$refs.cat2bugDrawer.open();
       this.getDefectConfig();

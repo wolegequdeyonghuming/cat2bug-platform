@@ -667,6 +667,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="defect.dataSourcesParams != null  and defect.dataSourcesParams != ''"> and d.data_sources_params = #{defect.dataSourcesParams}</if>
              <choose>
                  <when test="defect.moduleId == 0">and d.module_id IS NULL</when>
+                 <when test="defect.params != null and defect.params.moduleIdsOfProject != null and defect.params.moduleIdsOfProject.size() > 0">
+                     and d.module_id in
+                     <foreach collection="defect.params.moduleIdsOfProject" item="mId" separator="," open="(" close=")">#{mId}</foreach>
+                 </when>
                  <when test="defect.moduleId != null and defect.moduleId > 0">and d.module_id = #{defect.moduleId}</when>
                  <otherwise></otherwise>
              </choose>

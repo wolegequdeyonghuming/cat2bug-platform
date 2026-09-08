@@ -108,7 +108,7 @@
               :data-defect-id="scope.row.defectId"
             >{{ '#' + scope.row[column.prop] }}</span>
             <defect-type-flag v-else-if="column.prop==='defectTypeName'" :defect="scope.row" />
-            <span v-else-if="column.prop === 'modulePath'">
+            <span v-else-if="column.prop === 'moduleName'">
               {{ getModulePath(scope.row.modulePath) }}
             </span>
             <div v-else-if="column.prop==='defectName'" class="table-defect-title">

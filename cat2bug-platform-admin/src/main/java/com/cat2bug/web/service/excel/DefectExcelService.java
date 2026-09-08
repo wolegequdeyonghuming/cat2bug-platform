@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;/**
  * 缺陷 Excel 导出/导入（B9：引擎无关读写 SPI）。
  */
@@ -49,7 +50,18 @@ public class DefectExcelService {@Autowired
         params.putIfAbsent(ExcelColumnExportSupport.PARAM_EXPORT_SCOPE, ExcelColumnExportSupport.SCOPE_DATA);List<SysDictData> levelDict = sysDictTypeService.selectDictDataByType("defect_level");
         Map<Long, String> modulePathById = sysModuleService.selectSysModulePathList(query.getProjectId()).stream()
                 .filter(module -> module.getModuleId() != null && module.getModulePath() != null)
-                .collect(Collectors.toMap(SysModule::getModuleId, SysModule::getModulePath, (left, right) -> left));List<SysDefect> defects = sysDefectService.selectSysDefectList(query);
+                .collect(Collectors.toMap(SysModule::getModuleId, SysModule::getModulePath, (left, right) -> left));
+        // 选中父级交付物时展开为包含自身在内的全部子级，与列表查询口径一致
+        if (query.getModuleId() != null && query.getModuleId() > 0) {
+            Set<Long> moduleIds = sysModuleService.getAllChildIds(query.getProjectId(), query.getModuleId());
+            if (moduleIds != null && !moduleIds.isEmpty()) {
+                if (query.getParams() == null) {
+                    query.setParams(new HashMap<>());
+                }
+                query.getParams().put("moduleIdsOfProject", moduleIds);
+            }
+        }
+        List<SysDefect> defects = sysDefectService.selectSysDefectList(query);
         for (SysDefect defect : defects) {
             if (defect.getHandleByList() != null && !defect.getHandleByList().isEmpty()) {
                 defect.setHandleByNames(defect.getHandleByList().stream()

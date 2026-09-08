@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -104,6 +105,16 @@ public class SysDefectController extends BaseController
             sysUser.getParams().put("search", sysDefect.getParams().get("search"));
             List<SysUser> userList = sysUserProjectService.selectSysUserListByProjectId(sysDefect.getProjectId(), sysUser);
             sysDefect.getParams().put("searchHandleBy", userList.stream().map(u->u.getUserId()).collect(Collectors.toList()));
+        }
+        // 选中父级交付物时展开为包含自身在内的全部子级：必须在 startPage() 之前执行，否则 PageHelper 会把排序追加到 getAllChildIds 的递归 CTE 上导致报错
+        if (sysDefect.getModuleId() != null && sysDefect.getModuleId() > 0 && sysDefect.getProjectId() != null) {
+            Set<Long> moduleIds = sysModuleService.getAllChildIds(sysDefect.getProjectId(), sysDefect.getModuleId());
+            if (moduleIds != null && !moduleIds.isEmpty()) {
+                if (sysDefect.getParams() == null) {
+                    sysDefect.setParams(new HashMap<>());
+                }
+                sysDefect.getParams().put("moduleIdsOfProject", moduleIds);
+            }
         }
         DefectListQuerySupport.startDefectListPage();
         List<SysDefect> list = sysDefectService.selectSysDefectList(sysDefect);
