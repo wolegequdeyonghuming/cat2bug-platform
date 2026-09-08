@@ -242,6 +242,48 @@ public class SysDefectServiceImpl implements ISysDefectService
         return sysDefect;
     }
 
+    /** 列表用：按项目批量填充交付物全路径 */
+    private void enrichModulePaths(List<SysDefect> sysDefects) {
+        if (sysDefects == null || sysDefects.isEmpty()) {
+            return;
+        }
+        try {
+            Map<Long, Map<Long, String>> modulePathByIdOfProject = sysDefects.stream()
+                    .filter(d -> d != null && d.getProjectId() != null)
+                    .map(SysDefect::getProjectId)
+                    .distinct()
+                    .collect(Collectors.toMap(
+                            projectId -> projectId,
+                            projectId -> {
+                                List<SysModule> pathList = sysModuleMapper.selectSysModulePathList(projectId);
+                                if (pathList == null) {
+                                    return new HashMap<>();
+                                }
+                                return pathList.stream()
+                                        .filter(m -> m != null && m.getModuleId() != null)
+                                        .collect(Collectors.toMap(SysModule::getModuleId, m -> {
+                                            String modulePath = m.getModulePath();
+                                            return modulePath == null ? "" : modulePath;
+                                        }, (a, b) -> a));
+                            }));
+            for (SysDefect sysDefect : sysDefects) {
+                if (sysDefect == null || sysDefect.getModuleId() == null || sysDefect.getProjectId() == null) {
+                    continue;
+                }
+                Map<Long, String> modulePathById = modulePathByIdOfProject.get(sysDefect.getProjectId());
+                if (modulePathById == null) {
+                    continue;
+                }
+                String modulePath = modulePathById.get(sysDefect.getModuleId());
+                if (StringUtils.isNotBlank(modulePath)) {
+                    sysDefect.setModulePath(modulePath);
+                }
+            }
+        } catch (Exception e) {
+            log.warn("enrich module path list failed", e);
+        }
+    }
+
     /** 详情展示用：填充交付物全路径 */
     private void enrichModulePath(SysDefect sysDefect) {
         if (sysDefect == null || sysDefect.getModuleId() == null || sysDefect.getProjectId() == null) {
@@ -274,7 +316,9 @@ public class SysDefectServiceImpl implements ISysDefectService
     @Override
     public List<SysDefect> selectSysDefectList(SysDefect sysDefect)
     {
-        return sysDefectMapper.selectSysDefectList(sysDefect, SecurityUtils.getUserId(), DateUtils.getNowDate());
+        List<SysDefect> list = sysDefectMapper.selectSysDefectList(sysDefect, SecurityUtils.getUserId(), DateUtils.getNowDate());
+        enrichModulePaths(list);
+        return list;
     }
 
     /**

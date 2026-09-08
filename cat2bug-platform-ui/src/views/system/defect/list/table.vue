@@ -108,6 +108,9 @@
               :data-defect-id="scope.row.defectId"
             >{{ '#' + scope.row[column.prop] }}</span>
             <defect-type-flag v-else-if="column.prop==='defectTypeName'" :defect="scope.row" />
+            <span v-else-if="column.prop === 'modulePath'">
+              {{ getModulePath(scope.row.modulePath) }}
+            </span>
             <div v-else-if="column.prop==='defectName'" class="table-defect-title">
               <el-link type="primary" :title="scope.row.defectName" @click="handleClickTableRow(scope.row)">{{ scope.row.defectName }}</el-link>
               <div class="defect-statistics">
@@ -415,6 +418,15 @@ export default {
     this.destroyDefectTableBodyResizeObserver();
   },
   methods: {
+    getModulePath(modulePath) {
+      if (!modulePath)
+        return ''
+      const arr = modulePath.split('/')
+      if (arr.length >= 2) {
+        return [arr[0], arr[arr.length - 1]].join('/')
+      }
+      return modulePath
+    },
     emitColumnPickerVisible(visible) {
       this.$emit('column-picker-visible-change', visible)
     },
