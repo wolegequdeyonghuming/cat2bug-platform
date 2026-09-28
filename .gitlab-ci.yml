@@ -9,11 +9,15 @@ variables:
   MODULE_NAME: "backend"
   CONTAINER_PORT: "8000"
 
-  ## 作业控制：仅构建（不构建镜像、不部署）
+  ## 作业控制：构建 + 镜像 + K8s 部署
   RUN_PIPELINE_BUILD: "yes"
   RUN_PIPELINE_TEST:  "no"
-  RUN_BUILD_IMAGE:    "no"
-  RUN_DEPLOY_K8S:     "no"
+  RUN_BUILD_IMAGE:    "yes"
+  RUN_DEPLOY_K8S:     "yes"
+  NEED_INGRESS:       "no"
+
+  ## 镜像名使用本项目自带容器仓库路径（模板硬编码 /deshui/，本项目不适用）
+  IMAGE_NAME: "$CI_REGISTRY_IMAGE:$CI_PIPELINE_ID"
 
   ## 依赖镜像（含 JDK17 + Maven；Node 在 build.before_script 安装）
   BUILD_IMAGE: "maven:3.9-eclipse-temurin-17"
