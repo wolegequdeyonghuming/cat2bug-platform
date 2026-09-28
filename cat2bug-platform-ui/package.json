@@ -4,6 +4,7 @@
   "description": "猫陪我改BUG",
   "author": "yuzhantao",
   "license": "MIT",
+  "packageManager": "pnpm@10.25.0",
   "scripts": {
     "dev": "vue-cli-service serve",
     "dev:lan": "CAT2BUG_DEV_HMR=1 vue-cli-service serve",

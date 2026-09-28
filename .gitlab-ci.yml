@@ -32,7 +32,7 @@ build:
     - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
     - apt-get install -y --no-install-recommends nodejs
     - npm config set registry https://registry.npmmirror.com/
-    - npm install -g pnpm@9
+    - npm install -g pnpm@10.25.0
     - node --version && pnpm --version
   variables:
     # 1) 前端 embedded 打包（产物写入 admin/src/main/resources/static）
@@ -41,7 +41,7 @@ build:
       && bash deploy/scripts/ui-build.sh embedded \
       && mvn $MAVEN_OPTS $MAVEN_CLI_OPTS -pl cat2bug-platform-admin -am package -DskipTests -s $$MAVEN_SETTING"
   cache:
-    key: "$CI_COMMIT_REF_SLUG-v2"
+    key: "$CI_COMMIT_REF_SLUG-v3"
     paths:
       - "**/target/*.jar"
       - "cat2bug-platform-ui/node_modules/"
