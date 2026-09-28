@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cat2bug
+  namespace: __NAMESPACE__
+  labels:
+    app: cat2bug
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: cat2bug
+  template:
+    metadata:
+      labels:
+        app: cat2bug
+    spec:
+      imagePullSecrets:
+        - name: cat2bug-registry
+      containers:
+        - name: cat2bug
+          image: __IMAGE__
+          imagePullPolicy: Always
+          ports:
+            - name: web
+              containerPort: 8000
+              protocol: TCP
+          env:
+            - name: EXPOSE_SERVER_PORT
+              value: "8000"
+          volumeMounts:
+            # 安装配置（可写、持久）：application-install.yml 由 /setup 向导写入
+            - name: data
+              mountPath: /home/cat2bug/config
+              subPath: config
+            # 附件（本地存储）
+            - name: data
+              mountPath: /home/cat2bug/uploadPath
+              subPath: uploadPath
+            # H2 引导库 / 遗留数据
+            - name: data
+              mountPath: /home/cat2bug/data
+              subPath: data
+            # 日志
+            - name: data
+              mountPath: /home/cat2bug/logs
+              subPath: logs
+          readinessProbe:
+            httpGet:
+              path: /version
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /version
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 6
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 1Gi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: cat2bug-data
