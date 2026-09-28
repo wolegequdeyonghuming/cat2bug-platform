@@ -73,7 +73,7 @@
     "js-web-screen-shot": "^2.0.2",
     "jsencrypt": "3.0.0-rc.1",
     "jspdf": "^2.5.1",
-    "markdown-it": "^14.1.1",
+    "markdown-it": "14.3.0",
     "markdown-it-anchor": "^9.2.0",
     "markdown-it-attrs": "^4.3.1",
     "markdown-it-container": "^4.0.0",
@@ -137,5 +137,10 @@
   "browserslist": [
     "> 1%",
     "last 2 versions"
-  ]
+  ],
+  "pnpm": {
+    "overrides": {
+      "markdown-it@>=14": "14.3.0"
+    }
+  }
 }

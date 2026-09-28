@@ -36,11 +36,11 @@ build:
   variables:
     # 1) 前端 embedded 打包（产物写入 admin/src/main/resources/static）
     # 2) Maven 打包
-    BUILD_SHELL: "cd cat2bug-platform-ui && pnpm install --no-frozen-lockfile && cd .. \
+    BUILD_SHELL: "cd cat2bug-platform-ui && pnpm install --frozen-lockfile && cd .. \
       && bash deploy/scripts/ui-build.sh embedded \
       && mvn $MAVEN_OPTS $MAVEN_CLI_OPTS -pl cat2bug-platform-admin -am package -DskipTests -s $$MAVEN_SETTING"
   cache:
-    key: $CI_COMMIT_REF_SLUG
+    key: "$CI_COMMIT_REF_SLUG-v2"
     paths:
       - "**/target/*.jar"
       - "cat2bug-platform-ui/node_modules/"
