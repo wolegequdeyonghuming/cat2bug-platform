@@ -104,6 +104,42 @@
       </el-form-item>
 
       <el-form-item
+        v-else-if="item.kind === 'builtin' && item.formKey === 'planCompleteTime'"
+        :key="'builtin-' + item.formKey"
+        :label="$t('plan-complete-time')"
+        prop="planCompleteTime"
+      >
+        <el-date-picker
+          v-model="form.planCompleteTime"
+          type="date"
+          value-format="yyyy-MM-dd"
+          :placeholder="$t('please-select')"
+          style="max-width: 300px;"
+        />
+      </el-form-item>
+
+      <el-form-item
+        v-else-if="item.kind === 'builtin' && item.formKey === 'releasePlanId'"
+        :key="'builtin-' + item.formKey"
+        :label="$t('release-plan')"
+        prop="releasePlanId"
+      >
+        <el-select
+          v-model="form.releasePlanId"
+          clearable
+          :placeholder="$t('release-plan.please-select')"
+          style="max-width: 300px;"
+        >
+          <el-option
+            v-for="rp in config.releasePlans"
+            :key="rp.releasePlanId"
+            :label="rp.releasePlanName"
+            :value="rp.releasePlanId"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item
         v-else-if="item.kind === 'builtin' && item.formKey === 'caseId'"
         :key="'builtin-' + item.formKey"
         :label="$t('case')"

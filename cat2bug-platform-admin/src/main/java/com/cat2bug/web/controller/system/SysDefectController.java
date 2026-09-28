@@ -14,6 +14,7 @@ import com.cat2bug.system.domain.SysProjectDefectTabs;
 import com.cat2bug.system.domain.SysUserConfig;
 import com.cat2bug.system.service.*;
 import com.cat2bug.system.domain.SysProjectDefectField;
+import com.cat2bug.system.domain.SysReleasePlan;
 import com.cat2bug.system.util.DefectListKeywordSupport;
 import com.cat2bug.system.util.DefectListQuerySupport;
 import com.cat2bug.web.excel.ExcelHttpSupport;
@@ -67,6 +68,8 @@ public class SysDefectController extends BaseController
     @Autowired
     private ISysProjectDefectFieldService sysProjectDefectFieldService;
     @Autowired
+    private ISysReleasePlanService sysReleasePlanService;
+    @Autowired
     private DefectExcelService defectExcelService;
     @Autowired
     private DefectImportTemplateService defectImportTemplateService;
@@ -86,6 +89,9 @@ public class SysDefectController extends BaseController
         pdt.setProjectId(userConfig.getCurrentProjectId());
         pdt.setUserId(getUserId());
         ret.put("tabs",sysProjectDefectTabsService.selectSysProjectDefectTabsList(pdt));
+        SysReleasePlan releasePlan = new SysReleasePlan();
+        releasePlan.setProjectId(userConfig.getCurrentProjectId());
+        ret.put("releasePlans",sysReleasePlanService.selectSysReleasePlanList(releasePlan));
         return success(ret);
     }
 

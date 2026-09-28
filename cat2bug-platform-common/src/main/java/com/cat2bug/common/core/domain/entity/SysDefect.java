@@ -121,6 +121,16 @@ public class SysDefect extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "计划结束时间", i18nNameKey = "plan-end-time", width = 30, dateFormat = "yyyy-MM-dd HH:MM:ss", type = Excel.Type.EXPORT)
     private Date planEndTime;
+    /** 计划完成时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "计划完成时间", i18nNameKey = "plan-complete-time", width = 30, dateFormat = "yyyy-MM-dd", type = Excel.Type.EXPORT)
+    private Date planCompleteTime;
+
+    /** 发版计划id */
+    private Long releasePlanId;
+
+    /** 发版计划名称 */
+    private String releasePlanName;
 
     /**
      * 创建人

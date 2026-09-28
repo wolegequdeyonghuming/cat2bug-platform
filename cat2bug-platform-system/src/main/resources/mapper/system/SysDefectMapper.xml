@@ -43,6 +43,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="handleStartTime"    column="handle_start_time"    />
         <result property="planStartTime"    column="plan_start_time"    />
         <result property="planEndTime"    column="plan_end_time"    />
+        <result property="planCompleteTime"    column="plan_complete_time"    />
+        <result property="releasePlanId"    column="release_plan_id"    />
+        <result property="releasePlanName"    column="release_plan_name"    />
         <result property="sponsor"    column="sponsor"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="customFields"    column="custom_fields"    typeHandler="com.cat2bug.system.domain.handle.JsonMapTypeHandler"    />
@@ -204,6 +207,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     d.handle_by,
                     d.plan_start_time,
                     d.plan_end_time,
+                    d.plan_complete_time,
+                    d.release_plan_id,
+                    rp.release_plan_name,
                     d.sponsor,
                     d.del_flag,
                     d.custom_fields,
@@ -220,6 +226,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     sys_defect d
                         LEFT JOIN sys_module m ON m.module_id = d.module_id
                         LEFT JOIN sys_project p ON d.project_id = p.project_id
+                        LEFT JOIN sys_release_plan rp ON rp.release_plan_id = d.release_plan_id
                         LEFT JOIN sys_user_defect ud ON ud.defect_id = d.defect_id
                                     <if test="currentUserId != null ">
                                        and ud.user_id = #{currentUserId}
@@ -318,6 +325,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         d.handle_by,
         d.plan_start_time,
         d.plan_end_time,
+        d.plan_complete_time,
+        d.release_plan_id,
+        rp.release_plan_name,
         d.sponsor,
         d.del_flag,
         d.custom_fields,
@@ -340,6 +350,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         sys_defect d
         LEFT JOIN sys_module m ON m.module_id = d.module_id
         LEFT JOIN sys_project p ON d.project_id = p.project_id
+        LEFT JOIN sys_release_plan rp ON rp.release_plan_id = d.release_plan_id
         LEFT JOIN sys_user_defect ud ON ud.defect_id = d.defect_id
         <if test="currentUserId != null ">
             and ud.user_id = #{currentUserId}
@@ -423,6 +434,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         d.handle_by,
         d.plan_start_time,
         d.plan_end_time,
+        d.plan_complete_time,
+        d.release_plan_id,
+        rp.release_plan_name,
         d.sponsor,
         d.del_flag,
         d.custom_fields,
@@ -445,6 +459,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         sys_defect d
         LEFT JOIN sys_module m ON m.module_id = d.module_id
         LEFT JOIN sys_project p ON d.project_id = p.project_id
+        LEFT JOIN sys_release_plan rp ON rp.release_plan_id = d.release_plan_id
         LEFT JOIN sys_user_defect ud ON ud.defect_id = d.defect_id
         <if test="currentUserId != null ">
             and ud.user_id = #{currentUserId}
@@ -527,6 +542,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     d.handle_by,
                     d.plan_start_time,
                     d.plan_end_time,
+                    d.plan_complete_time,
+                    d.release_plan_id,
+                    rp.release_plan_name,
                     d.sponsor,
                     d.del_flag,
                     d.custom_fields,
@@ -543,6 +561,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     sys_defect d
                         LEFT JOIN sys_module m ON m.module_id = d.module_id
                         LEFT JOIN sys_project p ON d.project_id = p.project_id
+                        LEFT JOIN sys_release_plan rp ON rp.release_plan_id = d.release_plan_id
                         LEFT JOIN sys_user_defect ud ON ud.defect_id = d.defect_id
                                     <if test="currentUserId != null ">
                                        and ud.user_id = #{currentUserId}
@@ -662,6 +681,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </choose>
             <if test="defect.projectId != null "> and d.project_id = #{defect.projectId}</if>
             <if test="defect.testPlanId != null "> and d.test_plan_id = #{defect.testPlanId}</if>
+            <if test="defect.releasePlanId != null "> and d.release_plan_id = #{defect.releasePlanId}</if>
             <if test="defect.caseId != null "> and d.case_id = #{defect.caseId}</if>
             <if test="defect.dataSources != null "> and d.data_sources = #{defect.dataSources}</if>
             <if test="defect.dataSourcesParams != null  and defect.dataSourcesParams != ''"> and d.data_sources_params = #{defect.dataSourcesParams}</if>
@@ -783,6 +803,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="defectLevel != null">defect_level,</if>
             <if test="planStartTime != null">plan_start_time,</if>
             <if test="planEndTime != null">plan_end_time,</if>
+            <if test="planCompleteTime != null">plan_complete_time,</if>
+            <if test="releasePlanId != null">release_plan_id,</if>
             <if test="sponsor != null">sponsor,</if>
             <if test="customFields != null">custom_fields,</if>
          </trim>
@@ -813,6 +835,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="defectLevel != null">#{defectLevel},</if>
             <if test="planStartTime != null">#{planStartTime},</if>
             <if test="planEndTime != null">#{planEndTime},</if>
+            <if test="planCompleteTime != null">#{planCompleteTime},</if>
+            <if test="releasePlanId != null">#{releasePlanId},</if>
             <if test="sponsor != null">#{sponsor},</if>
             <if test="customFields != null">#{customFields, typeHandler=com.cat2bug.system.domain.handle.JsonMapTypeHandler},</if>
          </trim>
@@ -824,7 +848,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             project_num,defect_type,defect_name,defect_describe,
             annex_urls,img_urls,project_id,module_id,module_version,
             create_by,create_by_id,update_time,create_time,update_by,update_by_id,
-            defect_state,handle_by,handle_time,defect_level,defect_group_key,defect_key,plan_start_time,plan_end_time,sponsor,custom_fields
+            defect_state,handle_by,handle_time,defect_level,defect_group_key,defect_key,plan_start_time,plan_end_time,plan_complete_time,release_plan_id,sponsor,custom_fields
         </trim>
         values
         <foreach collection="defectList" separator="," item="defect">
@@ -852,6 +876,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{defect.defectKey},
             #{defect.planStartTime},
             #{defect.planEndTime},
+            #{defect.planCompleteTime},
+            #{defect.releasePlanId},
             #{defect.sponsor},
             #{defect.customFields, typeHandler=com.cat2bug.system.domain.handle.JsonMapTypeHandler}
             )
@@ -888,6 +914,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="planStartTime == null and params != null and params.clearPlanStartTime != null">plan_start_time = null,</if>
             <if test="planEndTime != null">plan_end_time = #{planEndTime},</if>
             <if test="planEndTime == null and params != null and params.clearPlanEndTime != null">plan_end_time = null,</if>
+            <if test="planCompleteTime != null">plan_complete_time = #{planCompleteTime},</if>
+            <if test="planCompleteTime == null and params != null and params.clearPlanCompleteTime != null">plan_complete_time = null,</if>
+            <if test="releasePlanId != null">release_plan_id = #{releasePlanId},</if>
+            <if test="releasePlanId == null and params != null and params.clearReleasePlanId != null">release_plan_id = null,</if>
             <if test="sponsor != null">sponsor = #{sponsor},</if>
             <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="customFields != null">custom_fields = #{customFields, typeHandler=com.cat2bug.system.domain.handle.JsonMapTypeHandler},</if>

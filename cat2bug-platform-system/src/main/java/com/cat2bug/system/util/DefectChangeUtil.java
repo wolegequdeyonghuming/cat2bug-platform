@@ -85,6 +85,8 @@ public final class DefectChangeUtil {
 
         addTimeChange(changes, "planStartTime", oldDefect.getPlanStartTime(), newDefect.getPlanStartTime());
         addTimeChange(changes, "planEndTime", oldDefect.getPlanEndTime(), newDefect.getPlanEndTime());
+        addTimeChange(changes, "planCompleteTime", oldDefect.getPlanCompleteTime(), newDefect.getPlanCompleteTime());
+        addNumberChange(changes, "releasePlanId", oldDefect.getReleasePlanId(), newDefect.getReleasePlanId());
 
         addCaseChange(changes, oldDefect.getCaseId(), newDefect.getCaseId(), caseMapper);
         addNumberChange(changes, "caseStepId", oldDefect.getCaseStepId(), newDefect.getCaseStepId());

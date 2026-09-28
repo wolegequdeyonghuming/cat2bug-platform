@@ -230,6 +230,9 @@ export default {
       if (cacheForm.moduleId != null) {
         this.form.moduleId = cacheForm.moduleId;
       }
+      if (cacheForm.releasePlanId != null) {
+        this.form.releasePlanId = cacheForm.releasePlanId;
+      }
     },
     /** 保存添加表单本地缓存 */
     saveAddFormCache() {
@@ -238,7 +241,8 @@ export default {
         defectLevel: this.form.defectLevel,
         handleBy: this.form.handleBy,
         moduleVersion: this.form.moduleVersion,
-        moduleId: this.form.moduleId
+        moduleId: this.form.moduleId,
+        releasePlanId: this.form.releasePlanId
       });
     },
     getDefectConfig() {
@@ -306,6 +310,8 @@ export default {
         handleBy: null,
         handleTime: null,
         defectLevel: 'middle',
+        planCompleteTime: null,
+        releasePlanId: null,
         customFields: {}
       };
       this.resetForm("form");
@@ -325,6 +331,16 @@ export default {
             this.form.planEndTime = this.planTimeRange[1];
           }
           if (this.form.defectId != null) {
+            const clearParams = {};
+            if (this.form.planCompleteTime == null || this.form.planCompleteTime === '') {
+              clearParams.clearPlanCompleteTime = true;
+            }
+            if (this.form.releasePlanId == null || this.form.releasePlanId === '') {
+              clearParams.clearReleasePlanId = true;
+            }
+            if (Object.keys(clearParams).length) {
+              this.form.params = { ...(this.form.params || {}), ...clearParams };
+            }
             updateDefect(this.form).then(res => {
               if(this.isSaveFormCache) {
                 this.saveAddFormCache();

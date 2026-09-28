@@ -185,6 +185,22 @@
                   @input="handleQuery()"
                 />
               </el-form-item>
+              <el-form-item prop="releasePlanId" class="defect-list-query-nav-item" data-query-key="releasePlanId">
+                <el-select
+                  v-model="queryParams.releasePlanId"
+                  size="small"
+                  clearable
+                  :placeholder="$t('release-plan')"
+                  @change="handleQuery()"
+                >
+                  <el-option
+                    v-for="rp in config.releasePlans"
+                    :key="rp.releasePlanId"
+                    :label="rp.releasePlanName"
+                    :value="rp.releasePlanId"
+                  />
+                </el-select>
+              </el-form-item>
             </el-form>
           </div>
         </template>
@@ -367,6 +383,7 @@ export default {
         nameVersionKeyword: null,
         projectId: 0,
         testPlanId: null,
+        releasePlanId: null,
         caseId: null,
         dataSources: null,
         dataSourcesParams: null,
@@ -405,6 +422,7 @@ export default {
       if (this.defectContentComponent === 'DefectExcel') {
         return {
           defectTypeOptions: this.config.types || [],
+          releasePlanOptions: this.config.releasePlans || [],
           /** 底边贴齐主区域：编辑区高度用满 clientHeight，不在内部再减空白 */
           viewportBottomGap: 0
         }
@@ -2498,6 +2516,7 @@ export default {
         nameVersionKeyword: null,
         projectId: this.projectId,
         testPlanId: null,
+        releasePlanId: null,
         caseId: null,
         dataSources: null,
         dataSourcesParams: null,

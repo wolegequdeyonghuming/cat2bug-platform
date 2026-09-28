@@ -95,6 +95,8 @@ export default {
       visible: false,
       form: {
         defectLevel: 'middle',
+        planCompleteTime: null,
+        releasePlanId: null,
         customFields: {}
       },
       rules: {
@@ -216,6 +218,8 @@ export default {
         handleBy: null,
         handleTime: null,
         defectLevel: 'middle',
+        planCompleteTime: null,
+        releasePlanId: null,
         customFields: {}
       }
       this.resetForm('form')
@@ -227,6 +231,16 @@ export default {
           if (this.planTimeRange.length > 1) {
             this.form.planStartTime = this.planTimeRange[0]
             this.form.planEndTime = this.planTimeRange[1]
+          }
+          const clearParams = {}
+          if (this.form.planCompleteTime == null || this.form.planCompleteTime === '') {
+            clearParams.clearPlanCompleteTime = true
+          }
+          if (this.form.releasePlanId == null || this.form.releasePlanId === '') {
+            clearParams.clearReleasePlanId = true
+          }
+          if (Object.keys(clearParams).length) {
+            this.form.params = { ...(this.form.params || {}), ...clearParams }
           }
           updateDefect(this.form).then(() => {
             this.$modal.msgSuccess(this.$i18n.t('modify-success'))

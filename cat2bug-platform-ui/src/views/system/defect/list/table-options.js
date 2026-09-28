@@ -139,6 +139,24 @@ export const TableOptions=[{
   width_ar: 170,
   width_ru: 260
 },{
+  key: 'plan-complete-time',
+  prop: 'planCompleteTime',
+  fixed: false,
+  visible: true,
+  width: 130,
+  width_ja_JP: 130,
+  width_ar: 130,
+  width_ru: 160
+},{
+  key: 'release-plan',
+  prop: 'releasePlanName',
+  fixed: false,
+  visible: true,
+  width: 170,
+  width_ja_JP: 170,
+  width_ar: 170,
+  width_ru: 220
+},{
   key: 'createBy',
   prop: 'createMember',
   fixed: false,

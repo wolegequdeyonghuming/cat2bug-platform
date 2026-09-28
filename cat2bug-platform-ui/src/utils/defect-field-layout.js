@@ -18,6 +18,8 @@ export const TABLE_KEY_TO_BUILTIN_FIELD_KEY = Object.freeze({
   annex: 'annexUrls',
   'plan-start-time': 'planStartTime',
   'plan-end-time': 'planEndTime',
+  'plan-complete-time': 'planCompleteTime',
+  'release-plan': 'releasePlanId',
   createBy: 'createMember',
   'update-time': 'updateTime'
 })
@@ -36,6 +38,8 @@ export const EXCEL_COL_KEY_TO_BUILTIN_FIELD_KEY = Object.freeze({
   excelAnnexUrlsText: 'annexUrls',
   planStartTime: 'planStartTime',
   planEndTime: 'planEndTime',
+  planCompleteTime: 'planCompleteTime',
+  releasePlanName: 'releasePlanId',
   createByText: 'createMember',
   updateTime: 'updateTime'
 })

@@ -318,6 +318,10 @@ const COLS = [
   /** columnOptions 带三角；可键盘改时间，清空走 params.clearPlan* */
   { key: "planStartTime", titleKey: "plan-start-time", width: 170, editable: true },
   { key: "planEndTime", titleKey: "plan-end-time", width: 170, editable: true },
+  /** 计划完成时间：yyyy-MM-dd 文本，清空走 params.clearPlanCompleteTime */
+  { key: "planCompleteTime", titleKey: "plan-complete-time", width: 130, editable: true },
+  /** 发版计划：map 列，格内显示名称、保存回写 releasePlanId，清空走 params.clearReleasePlanId */
+  { key: "releasePlanName", titleKey: "release-plan", width: 170, editable: true, fieldType: "map" },
   /** 创建人由后台在创建时写入，仅只读展示 */
   { key: "createByText", titleKey: "createBy", width: 120, editable: false },
   { key: "updateTime", titleKey: "update-time", width: 170, editable: false },
@@ -618,6 +622,11 @@ export default {
       type: Array,
       default: () => [],
     },
+    /** 与缺陷页 config.releasePlans 一致，用于「发版计划」下拉 */
+    releasePlanOptions: {
+      type: Array,
+      default: () => [],
+    },
     /** 表格可视区底部留白(px)；与容器 clientHeight 一起决定 excelEditorHeightPx，默认 20 */
     viewportBottomGap: {
       type: Number,
@@ -648,6 +657,8 @@ export default {
       defectStateSelectMap: {},
       /** 项目成员 userId -> 展示名，供处理人下拉 */
       memberSelectMap: {},
+      /** 发版计划 releasePlanId -> 发版计划名称，供「发版计划」下拉 */
+      releasePlanSelectMap: {},
       /** 由表格区域容器 ResizeObserver 测量，使 vue-excel-editor 铺满剩余高度 */
       excelEditorHeightPx: 480,
       planTimePickerVisible: false,
@@ -896,6 +907,19 @@ export default {
     defectStateMap: {
       handler(map) {
         this.syncExcelOptionMap(this.defectStateSelectMap, map);
+        this.refreshExcelEditorView();
+      },
+      immediate: true,
+    },
+    releasePlanOptions: {
+      handler(list) {
+        const map = {};
+        (list || []).forEach((rp) => {
+          if (rp && rp.releasePlanId != null) {
+            map[rp.releasePlanId] = rp.releasePlanName || "";
+          }
+        });
+        this.syncExcelOptionMap(this.releasePlanSelectMap, map);
         this.refreshExcelEditorView();
       },
       immediate: true,
@@ -2365,6 +2389,7 @@ export default {
       if (c && c.key === "defectType") return this.excelDefectTypeToText;
       if (c && c.key === "defectLevel") return this.excelDefectLevelToText;
       if (c && c.key === "excelHandleByMemberId") return this.excelHandleByMemberIdToText;
+      if (c && c.key === "releasePlanName") return this.excelReleasePlanToText;
       return this.excelColumnToTextPassthrough;
     },
     excelColumnToTextPassthrough(v) {
@@ -2389,6 +2414,13 @@ export default {
     excelHandleByMemberIdToText(v) {
       if (v == null || v === "") return "";
       const m = this.memberSelectMap;
+      const sk = String(v);
+      if (m && Object.prototype.hasOwnProperty.call(m, sk)) return String(m[sk]);
+      return String(v);
+    },
+    excelReleasePlanToText(v) {
+      if (v == null || v === "") return "";
+      const m = this.releasePlanSelectMap;
       const sk = String(v);
       if (m && Object.prototype.hasOwnProperty.call(m, sk)) return String(m[sk]);
       return String(v);
@@ -2420,6 +2452,7 @@ export default {
       if (c.key === "excelHandleByMemberId") return { toValue: this.excelToValueHandleByMemberId };
       if (c.key === "defectType") return { toValue: this.excelToValueDefectType };
       if (c.key === "defectStateText") return { toValue: this.excelToValueDefectState };
+      if (c.key === "releasePlanName") return { toValue: this.excelToValueReleasePlan };
       return {};
     },
     excelToValueDefectLevel(text) {
@@ -2437,6 +2470,11 @@ export default {
         return "2";
       }
       return this.excelMapFieldToValue(text, this.defectStateSelectMap, (k) => (k == null || k === "" ? "" : String(k)));
+    },
+    excelToValueReleasePlan(text) {
+      return this.excelMapFieldToValue(text, this.releasePlanSelectMap, (k) =>
+        k == null || k === "" ? "" : Number(k)
+      );
     },
     /**
      * 将粘贴文本解析为 map 存库 key：先按 options 文案精确匹配，再按 key 本身（与复制出的 id 一致）。
@@ -2943,6 +2981,7 @@ export default {
       if (c.key === "defectLevel") return this.defectLevelSelectMap;
       if (c.key === "defectStateText") return this.defectStateSelectMap;
       if (c.key === "excelHandleByMemberId") return this.memberSelectMap;
+      if (c.key === "releasePlanName") return this.releasePlanSelectMap;
       if (c.key === "planStartTime" || c.key === "planEndTime") return PLAN_TIME_CELL_OPTIONS_MARKER;
       if (c.key === "moduleName") return PLAN_TIME_CELL_OPTIONS_MARKER;
       if (c.isCustomField && c.excelFieldType === "datetime") return PLAN_TIME_CELL_OPTIONS_MARKER;
@@ -4228,6 +4267,8 @@ export default {
         excelAnnexUrlsText: "",
         planStartTime: r.planStartTime ? this.parseTime(r.planStartTime, "{y}-{m}-{d} {h}:{i}:{s}") : "",
         planEndTime: r.planEndTime ? this.parseTime(r.planEndTime, "{y}-{m}-{d} {h}:{i}:{s}") : "",
+        planCompleteTime: r.planCompleteTime ? this.parseTime(r.planCompleteTime, "{y}-{m}-{d}") : "",
+        releasePlanName: r.releasePlanId != null && r.releasePlanId !== "" ? r.releasePlanId : "",
         updateTime: r.updateTime ? this.parseTime(r.updateTime, "{y}-{m}-{d} {h}:{i}:{s}") : "",
         ...(this.mapCustomFieldsForExcelRow(r.customFields)),
       };
@@ -4426,6 +4467,22 @@ export default {
                 payload.params = {};
                 if (it.key === "planStartTime") payload.params.clearPlanStartTime = true;
                 else payload.params.clearPlanEndTime = true;
+              }
+            } else if (it.key === "planCompleteTime") {
+              const nv = String(it.nv != null ? it.nv : "").trim();
+              if (nv) {
+                payload.planCompleteTime = nv;
+              } else {
+                payload.params = {};
+                payload.params.clearPlanCompleteTime = true;
+              }
+            } else if (it.key === "releasePlanName") {
+              const nv = String(it.nv != null ? it.nv : "").trim();
+              if (nv) {
+                payload.releasePlanId = Number(nv);
+              } else {
+                payload.params = {};
+                payload.params.clearReleasePlanId = true;
               }
             } else if (it.key === "moduleName") {
               /* 交付物仅通过三角 SelectModule 与 moduleId 同步，忽略单元格纯文本回写 */

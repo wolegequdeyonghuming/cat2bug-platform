@@ -27,6 +27,8 @@ const DEFAULT_FORM_BUILTIN_ORDER = Object.freeze([
   'moduleVersion',
   'moduleId',
   'planStartTime',
+  'planCompleteTime',
+  'releasePlanId',
   'caseId',
   'defectDescribe',
   'imgUrls',

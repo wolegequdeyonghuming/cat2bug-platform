@@ -777,6 +777,8 @@ CREATE TABLE `sys_defect` (
   `defect_group_key` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '缺陷组关键字',
   `plan_start_time` datetime DEFAULT NULL COMMENT '计划开始时间',
   `plan_end_time` datetime DEFAULT NULL COMMENT '计划完成时间',
+  `plan_complete_time` datetime DEFAULT NULL COMMENT '计划完成时间',
+  `release_plan_id` bigint DEFAULT NULL COMMENT '发版计划ID',
   `extend_properties` json DEFAULT NULL COMMENT '扩展属性',
   `sponsor` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '发起人',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '0' COMMENT '删除标志（0存在 2删除）',
@@ -1306,6 +1308,20 @@ INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2141, '飞书', 2013, 10, 'feishu', 'system/project/other/feishu/index.vue', NULL, 1, 0, 'C', '1', '0', 'feishu:list', '#', 'admin', '2026-04-16 04:43:01', 'admin', '2026-04-16 04:44:24', '', NULL);
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2142, '查询飞书', 2141, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'feishu:query', '#', 'admin', '2026-04-16 04:55:57', '', NULL, '', NULL);
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2143, '保存飞书', 2141, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'feishu:save', '#', 'admin', '2026-04-16 04:56:21', '', NULL, '', NULL);
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2160, '发版计划', 2013, 4, 'releasePlan', 'system/releasePlan/index', NULL, 1, 0, 'C', '0', '0', 'system:releasePlan:list', 'date', 'admin', '2026-09-28 00:00:00', '', NULL, '', 'release-plan.manage');
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2161, '发版计划查询', 2160, 1, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:releasePlan:query', '#', 'admin', '2026-09-28 00:00:00', '', NULL, '', NULL);
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2162, '发版计划新增', 2160, 2, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:releasePlan:add', '#', 'admin', '2026-09-28 00:00:00', '', NULL, '', NULL);
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2163, '发版计划修改', 2160, 3, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:releasePlan:edit', '#', 'admin', '2026-09-28 00:00:00', '', NULL, '', NULL);
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2164, '发版计划删除', 2160, 4, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:releasePlan:remove', '#', 'admin', '2026-09-28 00:00:00', '', NULL, '', NULL);
+COMMIT;
+
+-- 发版计划角色授权：团队创建人(4)/项目创建人(6)/团队管理员(11)/项目管理员(12)
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`)
+SELECT r.role_id, m.menu_id
+FROM (SELECT 4 AS role_id UNION ALL SELECT 6 UNION ALL SELECT 11 UNION ALL SELECT 12) r
+CROSS JOIN `sys_menu` m
+WHERE m.perms IN ('system:releasePlan:list','system:releasePlan:query','system:releasePlan:add','system:releasePlan:edit','system:releasePlan:remove')
+AND NOT EXISTS (SELECT 1 FROM `sys_role_menu` rm WHERE rm.role_id = r.role_id AND rm.menu_id = m.menu_id);
 COMMIT;
 
 -- ----------------------------
@@ -1446,6 +1462,32 @@ CREATE TABLE `sys_plan_item` (
 
 -- ----------------------------
 -- Records of sys_plan_item
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for sys_release_plan
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_release_plan`;
+CREATE TABLE `sys_release_plan` (
+  `release_plan_id` bigint NOT NULL AUTO_INCREMENT COMMENT '发版计划ID',
+  `project_id` bigint NOT NULL COMMENT '项目ID',
+  `release_plan_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '发版计划名称',
+  `release_date` date DEFAULT NULL COMMENT '发版日期',
+  `remark` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '创建者',
+  `create_by_id` bigint DEFAULT NULL COMMENT '创建者ID',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '更新者',
+  `update_by_id` bigint DEFAULT NULL COMMENT '更新者ID',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`release_plan_id`),
+  KEY `project_id_` (`project_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='发版计划';
+
+-- ----------------------------
+-- Records of sys_release_plan
 -- ----------------------------
 BEGIN;
 COMMIT;

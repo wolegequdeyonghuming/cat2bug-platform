@@ -139,6 +139,7 @@
             <span v-else-if="column.prop==='updateTime'">{{ parseTime(scope.row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
             <span v-else-if="column.prop==='planStartTime'">{{ parseTime(scope.row.planStartTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
             <span v-else-if="column.prop==='planEndTime'">{{ parseTime(scope.row.planEndTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+            <span v-else-if="column.prop==='planCompleteTime'">{{ parseTime(scope.row.planCompleteTime, '{y}-{m}-{d}') }}</span>
             <row-list-member v-else-if="column.prop==='createMember'" :members="[scope.row.createMember]"></row-list-member>
             <row-list-member v-else-if="column.prop==='handleBy'" :members="scope.row.handleByList"></row-list-member>
             <cat2-bug-preview-image
@@ -320,6 +321,7 @@ export default {
           nameVersionKeyword: null,
           projectId: 0,
           testPlanId: null,
+          releasePlanId: null,
           caseId: null,
           dataSources: null,
           dataSourcesParams: null,

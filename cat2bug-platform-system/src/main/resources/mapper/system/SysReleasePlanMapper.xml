@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cat2bug.system.mapper.SysReleasePlanMapper">
+
+    <resultMap type="com.cat2bug.system.domain.SysReleasePlan" id="SysReleasePlanResult">
+        <result property="releasePlanId"    column="release_plan_id"    />
+        <result property="projectId"    column="project_id"    />
+        <result property="releasePlanName"    column="release_plan_name"    />
+        <result property="releaseDate"    column="release_date"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createById"    column="create_by_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateById"    column="update_by_id"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <select id="selectSysReleasePlanList" parameterType="com.cat2bug.system.domain.SysReleasePlan" resultMap="SysReleasePlanResult">
+        select release_plan_id, project_id, release_plan_name, release_date, remark, create_by, create_by_id, create_time, update_by, update_by_id, update_time
+        from sys_release_plan
+        <where>
+            <if test="releasePlanId != null"> and release_plan_id = #{releasePlanId}</if>
+            <if test="projectId != null"> and project_id = #{projectId}</if>
+            <if test="releasePlanName != null and releasePlanName != ''"> and release_plan_name like concat('%', #{releasePlanName}, '%')</if>
+        </where>
+        order by release_date desc, create_time desc
+    </select>
+
+    <select id="selectSysReleasePlanByReleasePlanId" parameterType="Long" resultMap="SysReleasePlanResult">
+        select release_plan_id, project_id, release_plan_name, release_date, remark, create_by, create_by_id, create_time, update_by, update_by_id, update_time
+        from sys_release_plan
+        where release_plan_id = #{releasePlanId}
+    </select>
+
+    <insert id="insertSysReleasePlan" parameterType="com.cat2bug.system.domain.SysReleasePlan" useGeneratedKeys="true" keyProperty="releasePlanId">
+        insert into sys_release_plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="releasePlanName != null and releasePlanName != ''">release_plan_name,</if>
+            <if test="releaseDate != null">release_date,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createById != null">create_by_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateById != null">update_by_id,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="releasePlanName != null and releasePlanName != ''">#{releasePlanName},</if>
+            <if test="releaseDate != null">#{releaseDate},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createById != null">#{createById},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateById != null">#{updateById},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysReleasePlan" parameterType="com.cat2bug.system.domain.SysReleasePlan">
+        update sys_release_plan
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="releasePlanName != null and releasePlanName != ''">release_plan_name = #{releasePlanName},</if>
+            <if test="releaseDate != null">release_date = #{releaseDate},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateById != null">update_by_id = #{updateById},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where release_plan_id = #{releasePlanId}
+    </update>
+
+    <delete id="deleteSysReleasePlanByReleasePlanIds" parameterType="Long">
+        delete from sys_release_plan where release_plan_id in
+        <foreach item="releasePlanId" collection="array" open="(" separator="," close=")">
+            #{releasePlanId}
+        </foreach>
+    </delete>
+
+    <update id="clearDefectsOfReleasePlans" parameterType="Long">
+        update sys_defect set release_plan_id = null where del_flag = '0' and release_plan_id in
+        <foreach item="releasePlanId" collection="array" open="(" separator="," close=")">
+            #{releasePlanId}
+        </foreach>
+    </update>
+
+    <select id="selectSysDefectList" resultMap="com.cat2bug.system.mapper.SysDefectMapper.SysDefectResult">
+        <include refid="com.cat2bug.system.mapper.SysDefectMapper.selectSysDefectListVo"/>
+        <where>
+            d.release_plan_id = #{releasePlanId}
+            <if test="defect.params != null and defect.params.moduleIdsOfProject !=null and defect.params.moduleIdsOfProject.size() > 0">
+                and
+                <foreach collection="defect.params.moduleIdsOfProject" item="mId" separator="or" open="(" close=")">
+                    d.module_id = #{mId}
+                </foreach>
+            </if>
+            <if test="defect.projectId != null "> and d.project_id = #{defect.projectId}</if>
+            <if test="defect.defectType != null "> and d.defect_type = #{defect.defectType, typeHandler=com.cat2bug.common.core.domain.handle.SysDefectTypeEnumTypeHandler }</if>
+            <if test="defect.nameVersionKeyword != null and defect.nameVersionKeyword != ''">
+                and (
+                    d.defect_name like concat('%', #{defect.nameVersionKeyword}, '%')
+                    or d.defect_name = #{defect.nameVersionKeyword}
+                    or d.project_num like concat('%', #{defect.nameVersionKeyword}, '%')
+                    or (d.module_version is not null and d.module_version like concat('%', #{defect.nameVersionKeyword}, '%'))
+                    or (m.module_name is not null and m.module_name like concat('%', #{defect.nameVersionKeyword}, '%'))
+                )
+            </if>
+            <if test="defect.defectState != null "> and d.defect_state = #{defect.defectState, typeHandler=com.cat2bug.common.core.domain.handle.SysDefectStateEnumTypeHandler}</if>
+            <if test="defect.defectLevel != null and defect.defectLevel != ''"> and d.defect_level = #{defect.defectLevel}</if>
+            <if test="defect.handleBy != null  and defect.handleBy != ''"> and
+                <foreach collection="defect.handleBy" item="b" separator=" or " open="(" close=")">
+                    d.handle_by REGEXP CONCAT('\b',#{b},'\b') OR d.handle_by REGEXP CONCAT('\\b',#{b},'\\b')
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <update id="associateDefects">
+        update sys_defect set release_plan_id = #{releasePlanId}
+        where del_flag = '0' and defect_id in
+        <foreach collection="defectIds" item="defectId" open="(" separator="," close=")">
+            #{defectId}
+        </foreach>
+    </update>
+
+    <update id="clearReleasePlanOfDefects">
+        update sys_defect set release_plan_id = null
+        where del_flag = '0' and release_plan_id = #{releasePlanId}
+        <if test="keepIds != null and keepIds.size() > 0">
+            and defect_id not in
+            <foreach collection="keepIds" item="defectId" open="(" separator="," close=")">
+                #{defectId}
+            </foreach>
+        </if>
+    </update>
+</mapper>

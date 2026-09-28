@@ -761,6 +761,8 @@ CREATE TABLE `sys_defect` (
   `defect_group_key` varchar(512) DEFAULT NULL COMMENT '缺陷组关键字',
   `plan_start_time` datetime DEFAULT NULL COMMENT '计划开始时间',
   `plan_end_time` datetime DEFAULT NULL COMMENT '计划完成时间',
+  `plan_complete_time` datetime DEFAULT NULL COMMENT '计划完成时间',
+  `release_plan_id` bigint DEFAULT NULL COMMENT '发版计划ID',
   `extend_properties` json DEFAULT NULL COMMENT '扩展属性',
   `sponsor` varchar(128) DEFAULT NULL COMMENT '发起人',
   `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '删除标志（0存在 2删除）',
@@ -1282,6 +1284,11 @@ INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2141, '飞书', 2013, 10, 'feishu', 'system/project/other/feishu/index.vue', NULL, 1, 0, 'C', '1', '0', 'feishu:list', '#', 'admin', '2026-04-16 04:43:01', 'admin', '2026-04-16 04:44:24', '', NULL);
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2142, '查询飞书', 2141, 1, '', NULL, NULL, 1, 0, 'F', '0', '0', 'feishu:query', '#', 'admin', '2026-04-16 04:55:57', '', NULL, '', NULL);
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2143, '保存飞书', 2141, 2, '', NULL, NULL, 1, 0, 'F', '0', '0', 'feishu:save', '#', 'admin', '2026-04-16 04:56:21', '', NULL, '', NULL);
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2160, '发版计划', 2013, 4, 'releasePlan', 'system/releasePlan/index', NULL, 1, 0, 'C', '0', '0', 'system:releasePlan:list', 'date', 'admin', '2026-09-28 00:00:00', '', NULL, '', 'release-plan.manage');
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2161, '发版计划查询', 2160, 1, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:releasePlan:query', '#', 'admin', '2026-09-28 00:00:00', '', NULL, '', NULL);
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2162, '发版计划新增', 2160, 2, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:releasePlan:add', '#', 'admin', '2026-09-28 00:00:00', '', NULL, '', NULL);
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2163, '发版计划修改', 2160, 3, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:releasePlan:edit', '#', 'admin', '2026-09-28 00:00:00', '', NULL, '', NULL);
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2164, '发版计划删除', 2160, 4, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:releasePlan:remove', '#', 'admin', '2026-09-28 00:00:00', '', NULL, '', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -1412,6 +1419,31 @@ CREATE TABLE `sys_plan_item` (
 
 -- ----------------------------
 -- Records of sys_plan_item
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for sys_release_plan
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_release_plan`;
+CREATE TABLE `sys_release_plan` (
+  `release_plan_id` bigint NOT NULL AUTO_INCREMENT COMMENT '发版计划ID',
+  `project_id` bigint NOT NULL COMMENT '项目ID',
+  `release_plan_name` varchar(255) NOT NULL COMMENT '发版计划名称',
+  `release_date` date DEFAULT NULL COMMENT '发版日期',
+  `remark` varchar(1000) DEFAULT NULL COMMENT '备注',
+  `create_by` varchar(64) DEFAULT NULL COMMENT '创建者',
+  `create_by_id` bigint DEFAULT NULL COMMENT '创建者ID',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(64) DEFAULT NULL COMMENT '更新者',
+  `update_by_id` bigint DEFAULT NULL COMMENT '更新者ID',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`release_plan_id`)
+);
+
+-- ----------------------------
+-- Records of sys_release_plan
 -- ----------------------------
 BEGIN;
 COMMIT;
@@ -1841,6 +1873,11 @@ INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (4, 2137);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (4, 2141);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (4, 2142);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (4, 2143);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (4, 2160);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (4, 2161);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (4, 2162);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (4, 2163);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (4, 2164);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (5, 2000);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (5, 2001);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (5, 2013);
@@ -1954,6 +1991,11 @@ INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (6, 2140);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (6, 2141);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (6, 2142);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (6, 2143);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (6, 2160);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (6, 2161);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (6, 2162);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (6, 2163);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (6, 2164);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (7, 2000);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (7, 2001);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (7, 2005);
@@ -2170,6 +2212,11 @@ INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (11, 2140);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (11, 2141);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (11, 2142);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (11, 2143);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (11, 2160);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (11, 2161);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (11, 2162);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (11, 2163);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (11, 2164);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (12, 2000);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (12, 2001);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (12, 2002);
@@ -2275,6 +2322,11 @@ INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (12, 2137);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (12, 2141);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (12, 2142);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (12, 2143);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (12, 2160);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (12, 2161);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (12, 2162);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (12, 2163);
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (12, 2164);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1810336402060121088, 194487968141779968);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1810336402060121088, 3514598350520133632);
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES (1810336402060121088, 5846944675140404224);
