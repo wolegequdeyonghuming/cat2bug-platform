@@ -49,3 +49,45 @@ build:
     paths:
       - cat2bug-platform-admin/target/cat2bug-admin.jar
     expire_in: 1 week
+
+## 覆盖模板的 K8s 部署：使用本项目自定义清单
+## 通过 PVC 持久化 config（install 文件）、uploadPath（附件）、data、logs
+.deploy_cat2bug:
+  image: $KUBECTL_IMAGE
+  cache: []
+  script:
+    - mkdir -p ~/.kube && cp "$KUBECONFIG" ~/.kube/config && chmod 600 ~/.kube/config
+    - kubectl get ns "$KUBE_NAMESPACE" || kubectl create ns "$KUBE_NAMESPACE"
+    - kubectl -n "$KUBE_NAMESPACE" create secret docker-registry cat2bug-registry --docker-server="$CI_REGISTRY" --docker-username="$CI_REGISTRY_USER" --docker-password="$CI_REGISTRY_PASSWORD" --dry-run=client -o yaml | kubectl apply -f -
+    - for f in pvc service deployment; do sed -e "s#__NAMESPACE__#$KUBE_NAMESPACE#g" -e "s#__IMAGE__#$IMAGE_NAME#g" "deploy/k8s/$f.yaml" | kubectl apply -f -; done
+    - kubectl -n "$KUBE_NAMESPACE" rollout status deployment/cat2bug --timeout=180s
+
+deploy_feature:
+  extends: .deploy_cat2bug
+  stage: deploy-feature
+  needs: [build_image]
+  variables:
+    KUBE_NAMESPACE: "dev-cat2bug-default"
+  environment:
+    name: "dev/default/backend"
+  rules:
+    - if: '$RUN_DEPLOY_K8S == "no"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME == "dev" || $CI_COMMIT_REF_NAME =~ /.*-dev/'
+      when: on_success
+    - when: never
+
+deploy_stag:
+  extends: .deploy_cat2bug
+  stage: deploy-stag
+  needs: [build_image]
+  variables:
+    KUBE_NAMESPACE: "stage-cat2bug-default"
+  environment:
+    name: "stage/default/backend"
+  rules:
+    - if: '$RUN_DEPLOY_K8S == "no"'
+      when: never
+    - if: '$CI_COMMIT_REF_NAME == "prod" || $CI_COMMIT_REF_NAME =~ /.*-prod/ || $CI_COMMIT_TAG'
+      when: on_success
+    - when: never

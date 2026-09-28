@@ -53,6 +53,10 @@ public final class DefectBuiltinFieldRegistry {
         order += 10;
         list.add(def("planEndTime", "plan-end-time", "datetime", 0, 1, null, order));
         order += 10;
+        list.add(def("planCompleteTime", "plan-complete-time", "datetime", 0, 1, null, order));
+        order += 10;
+        list.add(def("releasePlanId", "release-plan", "object", 0, 1, null, order));
+        order += 10;
         list.add(def("createMember", "createBy", "object", 0, 1, null, order));
         order += 10;
         list.add(def("updateTime", "update-time", "datetime", 0, 1, null, order));
