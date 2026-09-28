@@ -70,7 +70,8 @@ deploy_feature:
   variables:
     KUBE_NAMESPACE: "dev-cat2bug-default"
   environment:
-    name: "dev/default/backend"
+    # 必须与模板 rollout_feature 的 environment.name 完全一致
+    name: "${ENV_NAME}/${VERSION_NAME}/${MODULE_NAME}"
   rules:
     - if: '$RUN_DEPLOY_K8S == "no"'
       when: never
@@ -78,17 +79,28 @@ deploy_feature:
       when: on_success
     - when: never
 
+## 本项目仅使用 dev 环境：禁用 stage 部署
+## （避免与模板 rollout_stag 的环境名校验冲突；如需 stage 再恢复为完整部署）
 deploy_stag:
-  extends: .deploy_cat2bug
   stage: deploy-stag
-  needs: [build_image]
-  variables:
-    KUBE_NAMESPACE: "stage-cat2bug-default"
+  image: $KUBECTL_IMAGE
+  cache: []
   environment:
-    name: "stage/default/backend"
+    name: "${ENV_NAME}/${VERSION_NAME}/${MODULE_NAME}"
+  script:
+    - echo "stage 环境已禁用（本项目仅使用 dev）"
   rules:
-    - if: '$RUN_DEPLOY_K8S == "no"'
-      when: never
-    - if: '$CI_COMMIT_REF_NAME == "prod" || $CI_COMMIT_REF_NAME =~ /.*-prod/ || $CI_COMMIT_TAG'
-      when: on_success
+    - when: never
+
+## 与模板 rollout_stag 环境名保持一致并禁用，避免误推 prod 分支时的 needs/on_stop 校验问题
+rollout_stag:
+  stage: rollout-stag
+  image: $KUBECTL_IMAGE
+  cache: []
+  environment:
+    name: "${ENV_NAME}/${VERSION_NAME}/${MODULE_NAME}"
+    action: stop
+  script:
+    - echo "stage rollback 已禁用（本项目仅使用 dev）"
+  rules:
     - when: never
