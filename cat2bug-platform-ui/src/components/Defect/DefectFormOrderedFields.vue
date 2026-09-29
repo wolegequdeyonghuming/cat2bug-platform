@@ -163,7 +163,7 @@
         <cat2-bug-textarea
           ref="cat2bugTextarea"
           :name="$t('describe').toString()"
-          :placeholder="$t('defect.enter-markdown-describe').toString()"
+          :placeholder="$t('default-describe').toString()"
           :tools="describeTools"
           v-model="form.defectDescribe"
           maxlength="65536"

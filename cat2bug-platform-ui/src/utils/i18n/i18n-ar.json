@@ -1596,5 +1596,6 @@
   "keyboard.act.project-manage-tab-all": "جميع المشاريع",
   "keyboard.act.project-create-back": "رجوع",
   "keyboard.act.profile-switch-tab": "تبديل التبويب",
-  "keyboard.act.profile-back": "رجوع"
+  "keyboard.act.profile-back": "رجوع",
+  "default-describe": "### البيئة\n\n### خطوات إعادة الإنتاج\n1. \n2. \n3. \n\n### النتيجة المتوقعة\n\n### النتيجة الفعلية\n\n### ملاحظات\n\n"
 }

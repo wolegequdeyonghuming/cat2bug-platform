@@ -1596,5 +1596,6 @@
   "keyboard.act.project-manage-tab-all": "전체 프로젝트",
   "keyboard.act.project-create-back": "뒤로",
   "keyboard.act.profile-switch-tab": "탭 전환",
-  "keyboard.act.profile-back": "뒤로"
+  "keyboard.act.profile-back": "뒤로",
+  "default-describe": "### 환경\n\n### 재현 절차\n1. \n2. \n3. \n\n### 예상 결과\n\n### 실제 결과\n\n### 비고\n\n"
 }

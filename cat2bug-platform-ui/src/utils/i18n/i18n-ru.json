@@ -1596,5 +1596,6 @@
   "keyboard.act.project-manage-tab-all": "Все проекты",
   "keyboard.act.project-create-back": "Назад",
   "keyboard.act.profile-switch-tab": "Переключить вкладку",
-  "keyboard.act.profile-back": "Назад"
+  "keyboard.act.profile-back": "Назад",
+  "default-describe": "### Окружение\n\n### Шаги воспроизведения\n1. \n2. \n3. \n\n### Ожидаемый результат\n\n### Фактический результат\n\n### Примечания\n\n"
 }

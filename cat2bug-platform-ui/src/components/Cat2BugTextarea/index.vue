@@ -109,6 +109,7 @@ export default {
   },
   mounted() {
     this.$refs.cat2bugTextarea.addEventListener('paste',this.getClipboardImage);
+    this.textContent = this.content;
   },
   computed: {
     title: function () {

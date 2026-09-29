@@ -1596,5 +1596,6 @@
   "keyboard.act.project-manage-tab-all": "すべてのプロジェクト",
   "keyboard.act.project-create-back": "戻る",
   "keyboard.act.profile-switch-tab": "タブ切替",
-  "keyboard.act.profile-back": "戻る"
+  "keyboard.act.profile-back": "戻る",
+  "default-describe": "### 環境\n\n### 再現手順\n1. \n2. \n3. \n\n### 期待される結果\n\n### 実際の結果\n\n### 備考\n\n"
 }

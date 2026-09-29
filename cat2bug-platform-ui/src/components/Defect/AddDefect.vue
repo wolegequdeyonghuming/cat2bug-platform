@@ -130,7 +130,7 @@ export default {
       form: {
         defectType: 'BUG',
         defectLevel: 'middle',
-        customFields: {}
+        customFields: {},
       },
       // 表单校验
       rules: {
@@ -287,11 +287,13 @@ export default {
       this.defectAiModelId = null;
       this.defectAiServiceType = 'ollama';
       data = data || {};
+      console.log(this.$i18n.t('default-describe'))
+      this.resetForm("form");
       this.form = {
         defectId: null,
         defectType: 'BUG',
         defectName: null,
-        defectDescribe: null,
+        defectDescribe: this.$i18n.t('default-describe'),
         annexUrls: null,
         imgUrls: data.imgUrls || null,
         projectId: data.projectId || this.projectId,
@@ -314,7 +316,6 @@ export default {
         releasePlanId: null,
         customFields: {}
       };
-      this.resetForm("form");
       this.readIsSaveFormCacheValue();
       if(this.isSaveFormCache) {
         this.readAddFormCache();

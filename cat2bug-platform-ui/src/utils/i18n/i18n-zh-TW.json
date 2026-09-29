@@ -1598,5 +1598,6 @@
   "keyboard.act.project-manage-tab-all": "全部專案",
   "keyboard.act.project-create-back": "返回",
   "keyboard.act.profile-switch-tab": "切換頁籤",
-  "keyboard.act.profile-back": "返回"
+  "keyboard.act.profile-back": "返回",
+  "default-describe": "### 環境\n\n### 重現步驟\n1. \n2. \n3. \n\n### 預期結果\n\n### 實際結果\n\n### 備註\n\n"
 }
