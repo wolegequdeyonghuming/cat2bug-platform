@@ -18,7 +18,7 @@
         v-for="(item,index) in options"
         :key="index"
         class="col click item"
-        :class="{ 'is-keyboard-active': index === activeIndex }"
+        :class="{ 'is-keyboard-active': index === activeIndex, 'is-now': item.projectId == projectId }"
         @click="handleProjectChange(item)"
       >
         <div class="row">
@@ -366,6 +366,9 @@ export default {
 .click:hover,
 .item.is-keyboard-active {
   background-color: #e8f4ff;
+}
+.item.is-now {
+  color: var(--cat2bug-primary)
 }
 .item {
   font-size: 1rem;
