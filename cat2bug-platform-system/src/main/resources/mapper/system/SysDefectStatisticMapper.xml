@@ -92,7 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LEFT JOIN sys_defect d ON d.project_id = up.project_id
             AND d.del_flag = '0'
             AND d.defect_state != 4
-            AND JSON_CONTAINS(d.handle_by, CAST(u.user_id AS JSON))
+            AND JSON_CONTAINS(d.handle_by, CAST(u.user_id AS CHAR))
         WHERE up.project_id = #{projectId}
         GROUP BY u.user_id, u.nick_name, u.avatar
         ORDER BY total DESC, u.nick_name ASC
@@ -108,7 +108,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE d.project_id = #{projectId}
             AND d.del_flag = '0'
             AND d.defect_state != 4
-            AND JSON_CONTAINS(d.handle_by, CAST(#{userId} AS JSON))
+            AND JSON_CONTAINS(d.handle_by, CAST(#{userId} AS CHAR))
     </select>
 
     <select id="openWorkloadByProject" resultMap="SysDefectOpenWorkloadResult" databaseId="h2">
