@@ -14,7 +14,7 @@ variables:
   RUN_PIPELINE_TEST:  "no"
   RUN_BUILD_IMAGE:    "yes"
   RUN_DEPLOY_K8S:     "yes"
-  NEED_INGRESS:       "yes"
+  NEED_INGRESS:       "no"
 
   ## 镜像名使用本项目自带容器仓库路径（模板硬编码 /deshui/，本项目不适用）
   # IMAGE_NAME: "$CI_REGISTRY_IMAGE:$CI_PIPELINE_ID"
