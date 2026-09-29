@@ -103,7 +103,7 @@ Vue.use(TabDirectionPlugin)
 Vue.use(SwitchKeyboardPlugin)
 Vue.use(UploadFocusTabPlugin)
 Vue.use(ComboFocusTabPlugin)
-Vue.use(DropdownBlurClosePlugin)
+// Vue.use(DropdownBlurClosePlugin)
 Vue.component('CommandPalette', CommandPalette)
 DictData.install()
 
@@ -121,7 +121,7 @@ Vue.use(Element, {
 })
 Vue.use(DropdownKbdPlugin)
 Vue.use(DatePickerEscapePlugin)
-Vue.use(DatePickerKbdPlugin)
+// Vue.use(DatePickerKbdPlugin)
 Vue.use(DefectDrawerShortcutsPlugin)
 
 const userId = store.state.user.id

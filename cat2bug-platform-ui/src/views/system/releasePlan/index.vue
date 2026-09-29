@@ -87,8 +87,8 @@
     />
 
     <!-- 添加或修改发版计划对话框 -->
-    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="560px" append-to-body :close-on-click-modal="false">
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="560px" :close-on-click-modal="false">
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
         <el-form-item :label="$t('release-plan.name')" prop="releasePlanName">
           <el-input v-model="form.releasePlanName" :placeholder="$t('release-plan.enter-name')" maxlength="255" />
         </el-form-item>
@@ -102,11 +102,11 @@
           />
         </el-form-item>
         <el-form-item :label="$t('remark')" prop="remark">
-          <el-input v-model="form.remark" type="textarea" :placeholder="$t('please-enter')" />
+          <el-input v-model="form.remark" type="textarea" :placeholder="$t('please-enter-remark')" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">{{ $t('confirm') }}</el-button>
+        <el-button type="primary" @click="submitForm">{{ $t('setup.step.confirm') }}</el-button>
         <el-button @click="dialogVisible = false">{{ $t('cancel') }}</el-button>
       </div>
     </el-dialog>
@@ -151,7 +151,7 @@
         <el-table-column :label="$t('version')" align="center" prop="moduleVersion" width="120" :show-overflow-tooltip="true" />
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitAssociateDefects">{{ $t('confirm') }}</el-button>
+        <el-button type="primary" @click="submitAssociateDefects">{{ $t('setup.step.confirm') }}</el-button>
         <el-button @click="associateDialogVisible = false">{{ $t('cancel') }}</el-button>
       </div>
     </el-dialog>
@@ -248,7 +248,7 @@ export default {
         releasePlanId: undefined,
         projectId: this.projectId,
         releasePlanName: undefined,
-        releaseDate: undefined,
+        releaseDate: '',
         remark: undefined
       }
       this.resetForm('form')
