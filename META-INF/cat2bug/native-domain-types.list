@@ -23,6 +23,8 @@ com.cat2bug.system.domain.SysDocument
 com.cat2bug.system.domain.SysDocumentStatistics
 com.cat2bug.system.domain.SysLogininfor
 com.cat2bug.system.domain.SysMemberOfDefectsLine
+com.cat2bug.system.domain.SysMemberOperationStatistic
+com.cat2bug.system.domain.SysMemberOperationStatistics
 com.cat2bug.system.domain.SysMemberRankOfDefects
 com.cat2bug.system.domain.SysMemberStatistics
 com.cat2bug.system.domain.SysModule

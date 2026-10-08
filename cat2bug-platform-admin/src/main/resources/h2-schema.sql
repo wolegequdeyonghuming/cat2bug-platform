@@ -798,6 +798,29 @@ BEGIN;
 COMMIT;
 
 -- ----------------------------
+-- Table structure for sys_member_operation_statistic
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_member_operation_statistic`;
+CREATE TABLE `sys_member_operation_statistic` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `stat_date` date NOT NULL COMMENT '统计日期',
+  `project_id` bigint NOT NULL COMMENT '项目id',
+  `user_id` bigint NOT NULL COMMENT '成员id',
+  `create_count` int NOT NULL DEFAULT '0' COMMENT '新增缺陷数',
+  `repair_count` int NOT NULL DEFAULT '0' COMMENT '修复数',
+  `verify_count` int NOT NULL DEFAULT '0' COMMENT '验证数',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  CONSTRAINT `uk_stat_date_project_user` UNIQUE (`stat_date`,`project_id`,`user_id`)
+);
+
+-- ----------------------------
+-- Records of sys_member_operation_statistic
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for sys_defect_shard
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_defect_shard`;
@@ -1000,6 +1023,7 @@ CREATE TABLE `sys_job` (
 -- Records of sys_job
 -- ----------------------------
 BEGIN;
+INSERT INTO `sys_job` (`job_name`, `job_group`, `invoke_target`, `cron_expression`, `misfire_policy`, `concurrent`, `status`, `create_by`, `create_time`, `remark`) VALUES ('成员操作统计日结', 'DEFAULT', 'memberOperationStatisticTask.generateDaily()', '0 10 0 * * ?', '3', '1', '0', 'admin', CURRENT_TIMESTAMP, '每日00:10统计前一日成员操作');
 COMMIT;
 
 -- ----------------------------
@@ -1289,7 +1313,16 @@ INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2162, '发版计划新增', 2160, 2, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:releasePlan:add', '#', 'admin', '2026-09-28 00:00:00', '', NULL, '', NULL);
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2163, '发版计划修改', 2160, 3, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:releasePlan:edit', '#', 'admin', '2026-09-28 00:00:00', '', NULL, '', NULL);
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2164, '发版计划删除', 2160, 4, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:releasePlan:remove', '#', 'admin', '2026-09-28 00:00:00', '', NULL, '', NULL);
+INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `menu_name_i18n_key`) VALUES (2170, '成员操作统计', 2043, 1, 'member-operation', 'system/memberOperation/statistic/index', NULL, 1, 0, 'C', '0', '0', 'system:memberOperation:statistic:query', 'chart', 'admin', '2026-10-08 00:00:00', '', NULL, '成员操作统计菜单', 'member-operation.statistic');
 COMMIT;
+
+-- 成员操作统计角色授权：团队创建人(4)/项目创建人(6)/团队管理员(11)/项目管理员(12)
+INSERT INTO `sys_role_menu` (`role_id`, `menu_id`)
+SELECT r.role_id, m.menu_id
+FROM (SELECT 4 AS role_id UNION ALL SELECT 6 UNION ALL SELECT 11 UNION ALL SELECT 12) r
+CROSS JOIN `sys_menu` m
+WHERE m.perms = 'system:memberOperation:statistic:query'
+AND NOT EXISTS (SELECT 1 FROM `sys_role_menu` rm WHERE rm.role_id = r.role_id AND rm.menu_id = m.menu_id);
 
 -- ----------------------------
 -- Table structure for sys_module

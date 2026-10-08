@@ -1597,5 +1597,16 @@
   "keyboard.act.project-create-back": "戻る",
   "keyboard.act.profile-switch-tab": "タブ切替",
   "keyboard.act.profile-back": "戻る",
+  "member-operation.statistic": "メンバー操作統計",
+  "member-operation.day": "日",
+  "member-operation.week": "週",
+  "member-operation.month": "月",
+  "member-operation.member": "メンバー",
+  "member-operation.period": "日付/期間",
+  "member-operation.create": "新規",
+  "member-operation.repair": "修復",
+  "member-operation.verify": "検証",
+  "member-operation.total": "合計",
+  "member-operation.export": "エクスポート",
   "default-describe": "### 環境\n\n### 再現手順\n1. \n2. \n3. \n\n### 期待される結果\n\n### 実際の結果\n\n### 備考\n\n"
 }

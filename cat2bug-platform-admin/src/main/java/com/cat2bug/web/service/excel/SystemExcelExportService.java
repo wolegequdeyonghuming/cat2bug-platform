@@ -10,6 +10,7 @@ import com.cat2bug.system.domain.SysDefectLog;
 import com.cat2bug.common.core.domain.entity.SysDictData;
 import com.cat2bug.common.core.domain.entity.SysDictType;
 import com.cat2bug.system.domain.SysDocument;
+import com.cat2bug.system.domain.SysMemberOperationStatistics;
 import com.cat2bug.system.domain.SysModule;
 import com.cat2bug.system.domain.SysPlan;
 import com.cat2bug.system.domain.SysPlanItem;
@@ -122,13 +123,19 @@ public class SystemExcelExportService {private static final List<SimpleExcelExpo
             new SimpleExcelExportSupport.ColumnDef<>("是否锁定", t -> SimpleExcelExportSupport.yesNoLabel(
                     t.getLock() != null && t.getLock() ? "Y" : "N")),
             new SimpleExcelExportSupport.ColumnDef<>("锁定备注", SysTeam::getLockRemark)
-    );private static final List<SimpleExcelExportSupport.ColumnDef<SysProject>> PROJECT_COLUMNS = List.of(
+    );    private static final List<SimpleExcelExportSupport.ColumnDef<SysProject>> PROJECT_COLUMNS = List.of(
             new SimpleExcelExportSupport.ColumnDef<>("项目名称", SysProject::getProjectName),
             new SimpleExcelExportSupport.ColumnDef<>("项目图标地址", SysProject::getProjectIcon),
             new SimpleExcelExportSupport.ColumnDef<>("项目介绍", SysProject::getProjectIntroduce),
             new SimpleExcelExportSupport.ColumnDef<>("是否锁定", p -> SimpleExcelExportSupport.yesNoLabel(
                     p.getLock() != null && p.getLock() ? "Y" : "N")),
             new SimpleExcelExportSupport.ColumnDef<>("锁定备注", SysProject::getLockRemark)
+    );private static final List<SimpleExcelExportSupport.ColumnDef<SysMemberOperationStatistics>> MEMBER_OPERATION_STATISTIC_COLUMNS = List.of(
+            new SimpleExcelExportSupport.ColumnDef<>("成员", SysMemberOperationStatistics::getNickName),
+            new SimpleExcelExportSupport.ColumnDef<>("日期/期间", SysMemberOperationStatistics::getPeriod),
+            new SimpleExcelExportSupport.ColumnDef<>("新增", s -> SimpleExcelExportSupport.text(s.getCreateCount())),
+            new SimpleExcelExportSupport.ColumnDef<>("修复", s -> SimpleExcelExportSupport.text(s.getRepairCount())),
+            new SimpleExcelExportSupport.ColumnDef<>("验证", s -> SimpleExcelExportSupport.text(s.getVerifyCount()))
     );private static final List<SimpleExcelExportSupport.ColumnDef<SysDefectLog>> DEFECT_LOG_COLUMNS = List.of(
             new SimpleExcelExportSupport.ColumnDef<>("缺陷日志的描述", SysDefectLog::getDefectLogDescribe),
             new SimpleExcelExportSupport.ColumnDef<>("缺陷接收人", log -> formatDefectIds(log.getReceiveBy())),
@@ -250,6 +257,11 @@ public class SystemExcelExportService {private static final List<SimpleExcelExpo
     public byte[] exportProjects(SysProject query) {
         return SimpleExcelExportSupport.export(excelTableWriter, "项目数据", PROJECT_COLUMNS,
                 sysProjectService.selectSysProjectList(query), "导出项目数据失败");
+    }
+
+    public byte[] exportMemberOperationStatistics(List<SysMemberOperationStatistics> items) {
+        return SimpleExcelExportSupport.export(excelTableWriter, "成员操作统计", MEMBER_OPERATION_STATISTIC_COLUMNS,
+                items != null ? items : List.of(), "导出成员操作统计失败");
     }
 
     public byte[] exportDefectLogs(SysDefectLog query) {

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cat2bug.system.mapper.SysMemberOperationStatisticMapper">
+
+    <resultMap id="SysMemberOperationStatisticResult" type="com.cat2bug.system.domain.SysMemberOperationStatistic">
+        <id     property="id"          column="id"/>
+        <result property="statDate"    column="stat_date"/>
+        <result property="projectId"   column="project_id"/>
+        <result property="userId"      column="user_id"/>
+        <result property="createCount" column="create_count"/>
+        <result property="repairCount" column="repair_count"/>
+        <result property="verifyCount" column="verify_count"/>
+        <result property="createTime"  column="create_time"/>
+    </resultMap>
+
+    <resultMap id="SysMemberOperationStatisticsResult" type="com.cat2bug.system.domain.SysMemberOperationStatistics">
+        <id     property="userId"      column="user_id"/>
+        <result property="nickName"    column="nick_name"/>
+        <result property="userName"    column="user_name"/>
+        <result property="avatar"      column="avatar"/>
+        <result property="createCount" column="create_count"/>
+        <result property="repairCount" column="repair_count"/>
+        <result property="verifyCount" column="verify_count"/>
+    </resultMap>
+
+    <sql id="statSelectColumns">
+        <![CDATA[
+        SUM(CASE WHEN l.defect_log_type = 0 THEN 1 ELSE 0 END) AS create_count,
+        SUM(CASE WHEN l.defect_log_type = 5 THEN 1 ELSE 0 END) AS repair_count,
+        SUM(CASE WHEN l.defect_log_type IN (3, 6) THEN 1 ELSE 0 END) AS verify_count
+        ]]>
+    </sql>
+
+    <!-- 从缺陷日志聚合时间区间写入日统计表（MySQL：INSERT ... ON DUPLICATE KEY UPDATE，幂等） -->
+    <insert id="insertDailyFromLogs" parameterType="map">
+        INSERT INTO sys_member_operation_statistic
+            (stat_date, project_id, user_id, create_count, repair_count, verify_count, create_time)
+        SELECT
+            DATE(l.create_time) AS stat_date,
+            d.project_id,
+            l.create_by AS user_id,
+            <include refid="statSelectColumns"/>,
+            NOW()
+        FROM sys_defect_log l
+        INNER JOIN sys_defect d ON d.defect_id = l.defect_id AND d.del_flag = '0'
+        WHERE l.create_time &gt;= #{startTime} AND l.create_time &lt; #{endTime}
+        GROUP BY DATE(l.create_time), d.project_id, l.create_by
+        ON DUPLICATE KEY UPDATE
+            create_count = VALUES(create_count),
+            repair_count = VALUES(repair_count),
+            verify_count = VALUES(verify_count),
+            create_time = NOW()
+    </insert>
+
+    <!-- 从缺陷日志聚合时间区间写入日统计表（H2：配合 deleteDailyFromLogs 先删后插，幂等） -->
+    <insert id="insertDailyFromLogs" parameterType="map" databaseId="h2">
+        INSERT INTO sys_member_operation_statistic
+            (stat_date, project_id, user_id, create_count, repair_count, verify_count, create_time)
+        SELECT
+            CAST(l.create_time AS DATE) AS stat_date,
+            d.project_id,
+            l.create_by AS user_id,
+            <include refid="statSelectColumns"/>,
+            NOW()
+        FROM sys_defect_log l
+        INNER JOIN sys_defect d ON d.defect_id = l.defect_id AND d.del_flag = '0'
+        WHERE l.create_time &gt;= PARSEDATETIME(#{startTime}, 'yyyy-MM-dd HH:mm:ss')
+          AND l.create_time &lt; PARSEDATETIME(#{endTime}, 'yyyy-MM-dd HH:mm:ss')
+        GROUP BY CAST(l.create_time AS DATE), d.project_id, l.create_by
+    </insert>
+
+    <!-- 删除时间区间内的日统计（MySQL：幂等无操作，靠 ON DUPLICATE KEY 覆盖） -->
+    <delete id="deleteDailyFromLogs" parameterType="map">
+        DELETE FROM sys_member_operation_statistic WHERE 1 = 0
+    </delete>
+
+    <!-- 删除时间区间内的日统计（H2：先删后插，保证可重跑） -->
+    <delete id="deleteDailyFromLogs" parameterType="map" databaseId="h2">
+        DELETE FROM sys_member_operation_statistic
+        WHERE stat_date &gt;= CAST(PARSEDATETIME(#{startTime}, 'yyyy-MM-dd HH:mm:ss') AS DATE)
+          AND stat_date &lt; CAST(PARSEDATETIME(#{endTime}, 'yyyy-MM-dd HH:mm:ss') AS DATE)
+    </delete>
+
+    <!-- 按日期区间统计当前用户可见项目的成员操作（日=单日 / 周、月=区间求和，隔离准确） -->
+    <select id="selectMemberOperationStatistics" resultMap="SysMemberOperationStatisticsResult">
+        SELECT
+            u.user_id,
+            u.nick_name,
+            u.user_name,
+            u.avatar,
+            IFNULL(SUM(s.create_count), 0) AS create_count,
+            IFNULL(SUM(s.repair_count), 0) AS repair_count,
+            IFNULL(SUM(s.verify_count), 0) AS verify_count
+        FROM sys_user_project up
+        INNER JOIN sys_user_project up2 ON up2.project_id = up.project_id
+        INNER JOIN sys_user u ON u.user_id = up2.user_id AND u.del_flag = '0'
+        LEFT JOIN sys_member_operation_statistic s
+            ON s.project_id = up2.project_id
+            AND s.user_id = u.user_id
+            AND s.stat_date &gt;= #{startDate} AND s.stat_date &lt;= #{endDate}
+        WHERE up.user_id = #{currentUserId}
+        GROUP BY u.user_id, u.nick_name, u.user_name, u.avatar
+        ORDER BY create_count DESC, repair_count DESC, verify_count DESC, u.nick_name ASC
+    </select>
+
+    <select id="selectMemberOperationStatistics" resultMap="SysMemberOperationStatisticsResult" databaseId="h2">
+        SELECT
+            u.user_id,
+            u.nick_name,
+            u.user_name,
+            u.avatar,
+            IFNULL(SUM(s.create_count), 0) AS create_count,
+            IFNULL(SUM(s.repair_count), 0) AS repair_count,
+            IFNULL(SUM(s.verify_count), 0) AS verify_count
+        FROM sys_user_project up
+        INNER JOIN sys_user_project up2 ON up2.project_id = up.project_id
+        INNER JOIN sys_user u ON u.user_id = up2.user_id AND u.del_flag = '0'
+        LEFT JOIN sys_member_operation_statistic s
+            ON s.project_id = up2.project_id
+            AND s.user_id = u.user_id
+            AND s.stat_date &gt;= CAST(PARSEDATETIME(#{startDate}, 'yyyy-MM-dd') AS DATE)
+            AND s.stat_date &lt;= CAST(PARSEDATETIME(#{endDate}, 'yyyy-MM-dd') AS DATE)
+        WHERE up.user_id = #{currentUserId}
+        GROUP BY u.user_id, u.nick_name, u.user_name, u.avatar
+        ORDER BY create_count DESC, repair_count DESC, verify_count DESC, u.nick_name ASC
+    </select>
+
+</mapper>

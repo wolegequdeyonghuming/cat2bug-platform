@@ -1597,5 +1597,16 @@
   "keyboard.act.project-create-back": "رجوع",
   "keyboard.act.profile-switch-tab": "تبديل التبويب",
   "keyboard.act.profile-back": "رجوع",
+  "member-operation.statistic": "إحصائيات عمليات الأعضاء",
+  "member-operation.day": "يوم",
+  "member-operation.week": "أسبوع",
+  "member-operation.month": "شهر",
+  "member-operation.member": "عضو",
+  "member-operation.period": "التاريخ/الفترة",
+  "member-operation.create": "إنشاء",
+  "member-operation.repair": "إصلاح",
+  "member-operation.verify": "تحقق",
+  "member-operation.total": "الإجمالي",
+  "member-operation.export": "تصدير",
   "default-describe": "### البيئة\n\n### خطوات إعادة الإنتاج\n1. \n2. \n3. \n\n### النتيجة المتوقعة\n\n### النتيجة الفعلية\n\n### ملاحظات\n\n"
 }

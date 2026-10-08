@@ -1597,5 +1597,16 @@
   "keyboard.act.project-create-back": "뒤로",
   "keyboard.act.profile-switch-tab": "탭 전환",
   "keyboard.act.profile-back": "뒤로",
+  "member-operation.statistic": "멤버 작업 통계",
+  "member-operation.day": "일",
+  "member-operation.week": "주",
+  "member-operation.month": "월",
+  "member-operation.member": "멤버",
+  "member-operation.period": "날짜/기간",
+  "member-operation.create": "신규",
+  "member-operation.repair": "수리",
+  "member-operation.verify": "검증",
+  "member-operation.total": "합계",
+  "member-operation.export": "내보내기",
   "default-describe": "### 환경\n\n### 재현 절차\n1. \n2. \n3. \n\n### 예상 결과\n\n### 실제 결과\n\n### 비고\n\n"
 }

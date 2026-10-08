@@ -1599,5 +1599,16 @@
   "keyboard.act.project-create-back": "返回",
   "keyboard.act.profile-switch-tab": "切換頁籤",
   "keyboard.act.profile-back": "返回",
+  "member-operation.statistic": "成員操作統計",
+  "member-operation.day": "日",
+  "member-operation.week": "週",
+  "member-operation.month": "月",
+  "member-operation.member": "成員",
+  "member-operation.period": "日期/期間",
+  "member-operation.create": "新增",
+  "member-operation.repair": "修復",
+  "member-operation.verify": "驗證",
+  "member-operation.total": "合計",
+  "member-operation.export": "匯出",
   "default-describe": "### 環境\n\n### 重現步驟\n1. \n2. \n3. \n\n### 預期結果\n\n### 實際結果\n\n### 備註\n\n"
 }

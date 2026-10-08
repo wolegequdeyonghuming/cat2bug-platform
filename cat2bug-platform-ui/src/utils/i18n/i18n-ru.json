@@ -1597,5 +1597,16 @@
   "keyboard.act.project-create-back": "Назад",
   "keyboard.act.profile-switch-tab": "Переключить вкладку",
   "keyboard.act.profile-back": "Назад",
+  "member-operation.statistic": "Статистика операций участников",
+  "member-operation.day": "День",
+  "member-operation.week": "Неделя",
+  "member-operation.month": "Месяц",
+  "member-operation.member": "Участник",
+  "member-operation.period": "Дата/Период",
+  "member-operation.create": "Создано",
+  "member-operation.repair": "Исправлено",
+  "member-operation.verify": "Проверено",
+  "member-operation.total": "Итого",
+  "member-operation.export": "Экспорт",
   "default-describe": "### Окружение\n\n### Шаги воспроизведения\n1. \n2. \n3. \n\n### Ожидаемый результат\n\n### Фактический результат\n\n### Примечания\n\n"
 }

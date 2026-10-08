@@ -1615,5 +1615,16 @@
   "keyboard.act.project-create-back": "Go back",
   "keyboard.act.profile-switch-tab": "Switch tab",
   "keyboard.act.profile-back": "Go back",
+  "member-operation.statistic": "Member Operation Statistics",
+  "member-operation.day": "Day",
+  "member-operation.week": "Week",
+  "member-operation.month": "Month",
+  "member-operation.member": "Member",
+  "member-operation.period": "Date/Period",
+  "member-operation.create": "Create",
+  "member-operation.repair": "Repair",
+  "member-operation.verify": "Verify",
+  "member-operation.total": "Total",
+  "member-operation.export": "Export",
   "default-describe": "### Environment\n\n### Steps to Reproduce\n1. \n2. \n3. \n\n### Expected Result\n\n### Actual Result\n\n### Notes\n\n"
 }
